@@ -1,17 +1,23 @@
+import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
 
 import { totalStakedAtom } from 'states/staking'
-import { countUpOption, percentCountUpOption } from 'constants/countUp'
-import { useApr, useRewards } from 'hooks'
+import { percentCountUpOption, usdCountUpOption } from 'constants/countUp'
+import { useApr, useFiatCurrency, useRewards } from 'hooks'
 
 import { StyledStakingDashboard } from './styled'
 import CountUp from 'components/CountUp'
 
 function StakingDashboard() {
   const { aprs } = useApr()
+  const { bptToFiat } = useFiatCurrency()
   const { rewardTokenSymbols } = useRewards()
 
   const totalStaked = useAtomValue(totalStakedAtom)
+  const fiatValue = useMemo(
+    () => bptToFiat(totalStaked),
+    [bptToFiat, totalStaked]
+  )
 
   return (
     <StyledStakingDashboard>
@@ -19,7 +25,7 @@ function StakingDashboard() {
         <div className="detailItem">
           <dt>Total Staked</dt>
           <dd>
-            <CountUp {...countUpOption} end={totalStaked} showAlways />
+            <CountUp {...usdCountUpOption} end={fiatValue} showAlways />
           </dd>
         </div>
 
