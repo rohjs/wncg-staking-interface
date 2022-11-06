@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 
 import { buttonStyle } from 'components/Button/styled'
-import { flexbox, gradient, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, textStyle } from 'styles/utils'
 
 export const StyledJoinForm = styled(motion.form)`
   width: 100%;

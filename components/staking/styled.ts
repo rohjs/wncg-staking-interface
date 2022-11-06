@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { flexbox, posCenter, textStyle } from 'newStyles/utils'
+import { flexbox, posCenter, textStyle } from 'styles/utils'
 
 export const StyledStakingDashboard = styled.section`
   width: 660px;

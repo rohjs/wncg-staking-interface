@@ -7,7 +7,7 @@ import {
   inlineFlexbox,
   posCenter,
   textStyle,
-} from 'newStyles/utils'
+} from 'styles/utils'
 
 export const StyledGnb = styled.header`
   ${flexbox('space-between')}

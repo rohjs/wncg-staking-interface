@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { ModalPage } from 'components/Modals/shared'
 import { ModalCompletePage } from 'components/Modals/shared'
-import { flexbox, gradient, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, textStyle } from 'styles/utils'
 
 export const StyledJoinModalPage3 = styled(ModalPage)`
   .subtitle {

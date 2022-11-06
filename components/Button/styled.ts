@@ -2,7 +2,7 @@ import Link from 'next/link'
 import styled, { css } from 'styled-components'
 
 import { assertUnreachable } from 'utils/assertion'
-import { flexbox, gradient, inlineFlexbox, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, inlineFlexbox, textStyle } from 'styles/utils'
 
 export type ButtonSize = 'sm' | 'md' | 'lg'
 export type ButtonVariant =

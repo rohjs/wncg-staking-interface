@@ -1,5 +1,5 @@
 import { DEFAULT_TOKEN_INFO, TOKENS } from 'constants/tokens'
-import { ethereum, colors } from 'newStyles/constants/colors'
+import { ethereum, colors } from 'styles/constants/colors'
 
 export function getTokenInfo(address?: string) {
   if (!address) return DEFAULT_TOKEN_INFO

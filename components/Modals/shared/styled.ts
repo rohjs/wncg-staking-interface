@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 
-import { flexbox, gradient, scrollbar, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, scrollbar, textStyle } from 'styles/utils'
 import { buttonStyle } from 'components/Button/styled'
 
 export const StyledModalOverlay = styled(motion.div)`

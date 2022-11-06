@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 import { ModalPage } from 'components/Modals/shared'
-import { flexbox, textStyle } from 'newStyles/utils'
+import { flexbox, textStyle } from 'styles/utils'
 
 export const StyledClaimRewardModalPage1 = styled(ModalPage)`
   .checkout {

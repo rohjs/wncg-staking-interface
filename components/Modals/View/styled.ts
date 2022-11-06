@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { flexbox, textStyle } from 'newStyles/utils'
+import { flexbox, textStyle } from 'styles/utils'
 
 import { ModalPage } from 'components/Modals/shared'
 

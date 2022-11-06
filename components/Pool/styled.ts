@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 
-import { flexbox, gradient, inlineFlexbox, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, inlineFlexbox, textStyle } from 'styles/utils'
 
 const POOL_BALANCES_HEIGHT = 236
 const POOL_BALANCES_COLLAPSE_BUTTON_HEIGHT = 50

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 
-import { flexbox, gradient, inlineFlexbox, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, inlineFlexbox, textStyle } from 'styles/utils'
 import { ALERT_HEIGHT, GLOBAL_FOOTER_HEIGHT } from './constants'
 
 import { buttonStyle } from './Button/styled'

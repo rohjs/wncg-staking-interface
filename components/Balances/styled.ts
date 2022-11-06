@@ -7,7 +7,7 @@ import {
   posCenterX,
   posCenterY,
   textStyle,
-} from 'newStyles/utils'
+} from 'styles/utils'
 
 const StyledBalanceSection = styled.section`
   .title {

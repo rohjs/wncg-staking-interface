@@ -5,7 +5,7 @@ import { NextSeo } from 'next-seo'
 
 import { STAKING_SEO } from 'lib/seo'
 
-import { StyledWncgStakingPage } from 'newStyles/styled'
+import { StyledWncgStakingPage } from 'styles/styled'
 import Dashboard from 'components/staking/Dashboard'
 import Form from 'components/staking/Form'
 import Header from 'components/staking/Header'

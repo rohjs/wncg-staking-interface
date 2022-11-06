@@ -13,8 +13,6 @@ import Script from 'next/script'
 import { DefaultSeo } from 'next-seo'
 import { WagmiConfig } from 'wagmi'
 import 'react-toastify/dist/ReactToastify.css'
-import 'styles/globals.scss'
-import 'styles/toast.scss'
 
 import { configService } from 'services/config'
 import { DEFAULT_SEO } from 'lib/seo'
@@ -24,7 +22,7 @@ import Effects from 'components/Effects'
 import Layout from 'components/Layout'
 import Modals from 'components/Modals'
 import { ToastContainer } from 'components/ToastContainer'
-import GlobalStyle from 'newStyles/GlobalStyle'
+import GlobalStyle from 'styles/GlobalStyle'
 
 type AppProps = NextAppProps & {
   pageProps: {

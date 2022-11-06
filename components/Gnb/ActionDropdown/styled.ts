@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 
-import { inlineFlexbox, posCenter, textStyle } from 'newStyles/utils'
+import { inlineFlexbox, posCenter, textStyle } from 'styles/utils'
 
 import { buttonStyle } from 'components/Button/styled'
 

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 import { buttonStyle } from 'components/Button/styled'
-import { flexbox, textStyle } from 'newStyles/utils'
+import { flexbox, textStyle } from 'styles/utils'
 
 export const StyledExitModalPage1Footer = styled.footer`
   margin-top: 64px;

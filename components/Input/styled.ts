@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 
-import { flexbox, gradient, posCenterY, textStyle } from 'newStyles/utils'
+import { flexbox, gradient, posCenterY, textStyle } from 'styles/utils'
 
 const MAX_BUTTON_WIDTH = 80
 const MAX_BUTTON_HEIGHT = 48

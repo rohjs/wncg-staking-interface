@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 
-import { flexbox, textStyle } from 'newStyles/utils'
+import { flexbox, textStyle } from 'styles/utils'
 
 export const StyledDropdown = styled.div<{ $disabled?: boolean }>`
   position: relative;

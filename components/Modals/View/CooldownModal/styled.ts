@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { textStyle } from 'newStyles/utils'
+import { textStyle } from 'styles/utils'
 
 import { ModalCompletePage, ModalPage } from 'components/Modals/shared'
 

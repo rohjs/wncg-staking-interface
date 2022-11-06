@@ -2,10 +2,9 @@ import { useMemo } from 'react'
 import { useMount, useUnmount } from 'react-use'
 import { useSetAtom } from 'jotai'
 
-import { breakpointAtom } from 'states/ui'
-import type { Breakpoint } from 'states/ui'
+import { Breakpoint, breakpointAtom } from 'states/ui'
 
-// NOTE: styles/constancts/_breakpoints.scss
+// NOTE: styles/constants/_breakpoints.scss
 const BP: Record<Breakpoint, number> = {
   xs: 0,
   sm: 540,

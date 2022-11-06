@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useRef } from 'react'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
-import { flexbox } from 'newStyles/utils'
+import { flexbox } from 'styles/utils'
 
 import SvgIcon from './SvgIcon'
 
