@@ -4,8 +4,9 @@ import { useAtomValue } from 'jotai'
 import { AnimatePresence } from 'framer-motion'
 
 import { ModalCategory } from 'states/ui'
-import { isUnstakeWindowAtom } from 'states/user'
+import { unstakePhaseAtom } from 'states/user'
 import { slideInDown } from 'constants/motionVariants'
+import { UnstakePhase } from 'constants/types'
 import { useBalances, useModal } from 'hooks'
 
 import { StyledActionDropdownMenu } from './styled'
@@ -26,7 +27,8 @@ function ActionDropdownMenu({ close }: ActionDropdownMenuProps) {
   const { hasBptBalance } = useBalances()
   const { addModal } = useModal()
 
-  const isUnstakeWindow = useAtomValue(isUnstakeWindowAtom)
+  const unstakePhase = useAtomValue(unstakePhaseAtom)
+  const isUnstakeWindow = unstakePhase !== UnstakePhase.Idle
 
   function exit() {
     addModal({

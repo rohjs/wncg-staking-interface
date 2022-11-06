@@ -4,12 +4,12 @@ import { format, formatDistanceToNow } from 'date-fns'
 
 import { ModalCategory } from 'states/ui'
 import {
-  isCooldownWindowAtom,
-  isWithdrawWindowAtom,
   roundedTimestampsAtom,
   timestampsAtom,
+  unstakePhaseAtom,
 } from 'states/user'
 import { fadeIn } from 'constants/motionVariants'
+import { UnstakePhase } from 'constants/types'
 import { datetimePattern } from 'constants/time'
 import { useModal } from 'hooks'
 
@@ -23,25 +23,24 @@ function ActionDropdownMenuUnstakePeriod() {
   const [roundedCooldownEndsAt, roundedWithdrawEndsAt] = useAtomValue(
     roundedTimestampsAtom
   )
-  const isCooldownWindow = useAtomValue(isCooldownWindowAtom)
-  const isWithdrawWindow = useAtomValue(isWithdrawWindowAtom)
+  const unstakePhase = useAtomValue(unstakePhaseAtom)
 
-  const currentPhase = useMemo(
-    () => (isCooldownWindow ? `Cooldown` : `Withdraw`),
-    [isCooldownWindow]
+  const isWithdrawWindow = useMemo(
+    () => unstakePhase === UnstakePhase.WithdrawWindow,
+    [unstakePhase]
   )
 
   const endsAt = useMemo(
-    () => (isCooldownWindow ? cooldownEndsAt : withdrawEndsAt),
-    [cooldownEndsAt, isCooldownWindow, withdrawEndsAt]
+    () => (isWithdrawWindow ? withdrawEndsAt : cooldownEndsAt),
+    [cooldownEndsAt, isWithdrawWindow, withdrawEndsAt]
   )
 
   const timeDistanceDesc = `Withdraw window ${
-    isCooldownWindow ? `starts` : `ends`
+    isWithdrawWindow ? `ends` : `starts`
   } ${formatDistanceToNow(endsAt, { addSuffix: true })}`
 
   function withdraw() {
-    if (!isWithdrawWindow) return
+    if (isWithdrawWindow) return
     addModal({
       category: ModalCategory.Cooldown,
     })
@@ -50,7 +49,6 @@ function ActionDropdownMenuUnstakePeriod() {
   return (
     <StyledActionDropdownMenuUnstakePeriod
       className="unstakePeriod"
-      initial="initial"
       animate="animate"
       exit="exit"
       variants={fadeIn}
@@ -59,26 +57,16 @@ function ActionDropdownMenuUnstakePeriod() {
       $active={isWithdrawWindow}
     >
       <header className="header">
-        {isCooldownWindow && <SvgIcon icon="lock" />}
-        <h3 className="title">{currentPhase} period</h3>
+        {!isWithdrawWindow && <SvgIcon icon="lock" />}
+        <h3 className="title">
+          {isWithdrawWindow ? 'Withdraw' : 'Cooldown'} period
+        </h3>
       </header>
 
       <dl className="detailList" style={{ position: 'relative' }}>
         <div className="detailItem timeDistance">
           <dt className="hidden">Time left</dt>
           <dd aria-label={timeDistanceDesc}>
-            <span
-              style={{
-                fontSize: 10,
-                position: 'absolute',
-                top: 0,
-                zIndex: 10,
-                left: 0,
-                background: 'black',
-              }}
-            >
-              {timeDistanceDesc}
-            </span>
             <Timer expiresAt={endsAt} /> left
           </dd>
         </div>

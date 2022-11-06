@@ -8,7 +8,7 @@ import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
 import { findAbiFromStaking } from 'utils/wagmi'
 
-const log = createLogger(`black`)
+const log = createLogger(`orange`)
 
 const FNS = [
   'earmarkIncentive',
@@ -38,13 +38,21 @@ export function useStakingContractData() {
     [stakingAddress]
   )
 
+  const staleTime = useMemo(
+    () => (stakingData == null ? undefined : Infinity),
+    [stakingData]
+  )
+
   const { data } = useContractReads({
     contracts,
     cacheTime: Infinity,
-    staleTime: stakingData == null ? undefined : Infinity,
-    enabled: !!stakingAddress && stakingData == null,
-    onSettled() {
+    staleTime,
+    enabled: !!stakingAddress,
+    onSuccess() {
       log(`staking`)
+    },
+    onError(error) {
+      log(`staking`, error)
     },
   })
 

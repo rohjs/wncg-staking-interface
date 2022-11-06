@@ -17,7 +17,7 @@ import { useStaking } from '../useStaking'
 const FN = 'balanceOf'
 const ABI = findAbiFromErc20(FN)
 
-const log = createLogger(`black`)
+const log = createLogger(`green`)
 
 export function useBalances() {
   const { account } = useAccount()
@@ -54,11 +54,12 @@ export function useBalances() {
     addressOrName: account,
     enabled: !!account,
     watch: true,
-    onSettled() {
-      log(`balances`)
-    },
     onSuccess(data: unknown) {
+      log(`balances`)
       setEtherBalance((data as FetchBalanceResult)?.formatted || '0')
+    },
+    onError(error) {
+      log(`balances`, error)
     },
   })
 

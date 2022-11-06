@@ -18,7 +18,7 @@ import { useStaking } from '../useStaking'
 const FN = 'allowance'
 const ABI = findAbiFromErc20(FN)
 
-const log = createLogger(`black`)
+const log = createLogger(`green`)
 
 export function useAllowances() {
   const { account } = useAccount()
@@ -55,18 +55,19 @@ export function useAllowances() {
 
   useContractReads({
     contracts,
-    enabled: !!account && !!stakedTokenAddress,
+    enabled: !!account,
     watch: true,
-    onSettled() {
-      log(`allowances`)
-    },
     onSuccess(data: unknown = []) {
+      log(`allowances`)
       const allowanceMap = associateAllowances(
         tokenAddresses,
         spenders,
         data as BigNumber[]
       )
       setAllowances(allowanceMap)
+    },
+    onError(error) {
+      log(`allowances`, error)
     },
   })
 }

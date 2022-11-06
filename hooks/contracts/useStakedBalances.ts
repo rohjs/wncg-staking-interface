@@ -14,7 +14,7 @@ import { useAccount } from '../useAccount'
 const FN = 'stakedTokenBalance'
 const ABI = findAbiFromStaking(FN)
 
-const log = createLogger(`black`)
+const log = createLogger(`green`)
 
 export function useStakedBalances() {
   const { account } = useAccount()
@@ -36,15 +36,16 @@ export function useStakedBalances() {
     contracts,
     enabled: !!account,
     watch: true,
-    onSettled() {
-      log(`staked balances`)
-    },
     onSuccess(data: unknown = []) {
+      log(`staked balances`)
       const _stakedBalances = data as BigNumber[]
       const stakedBalances = _stakedBalances.map((amount) =>
         formatUnits(amount?.toString() || '0')
       )
       setStakedBalances(stakedBalances)
+    },
+    onError(error) {
+      log(`staked balances`, error)
     },
   })
 }

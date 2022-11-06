@@ -1,11 +1,15 @@
-import { useTimer } from 'hooks'
+import { useAtomValue } from 'jotai'
 
-type CooldownPeriodTimerProps = {
+import { nowAtom } from 'states/user'
+import { parseTimeDistance } from 'utils/datetime'
+
+type UnstakePeriodTimerProps = {
   expiresAt: number
 }
 
-function CooldownPeriodTimer({ expiresAt }: CooldownPeriodTimerProps) {
-  const { days, hours, minutes, seconds } = useTimer(expiresAt)
+function UnstakePeriodTimer({ expiresAt }: UnstakePeriodTimerProps) {
+  const now = useAtomValue(nowAtom) as number
+  const { days, hours, minutes, seconds } = parseTimeDistance(expiresAt - now)
 
   return (
     <time>
@@ -17,4 +21,4 @@ function CooldownPeriodTimer({ expiresAt }: CooldownPeriodTimerProps) {
   )
 }
 
-export default CooldownPeriodTimer
+export default UnstakePeriodTimer

@@ -44,6 +44,7 @@
     "react-number-format": "^5.1.1",
     "react-toastify": "^9.1.0",
     "react-use": "^17.4.0",
+    "rxjs": "^7.5.7",
     "sass": "^1.55.0",
     "store": "^2.0.12",
     "styled-components": "^5.3.6",

@@ -15,7 +15,7 @@ import { useStaking } from '../useStaking'
 const FNS = ['earnedWNCG', 'earnedBAL']
 const ABIS = findAbiFromStaking(...FNS)
 
-const log = createLogger(`black`)
+const log = createLogger(`green`)
 
 export function useRewards() {
   const { account } = useAccount()
@@ -40,14 +40,15 @@ export function useRewards() {
     contracts,
     enabled: !!account,
     watch: true,
-    onSettled() {
-      log(`rewards`)
-    },
     onSuccess(data: unknown = []) {
+      log(`rewards`)
       const rewards = (data as BigNumber[]).map((amount, i) =>
         formatUnits(amount?.toString() || '0', rewardTokenDecimals[i] || 18)
       )
       setRewards(rewards)
+    },
+    onError(error) {
+      log(`rewards`, error)
     },
   })
 }

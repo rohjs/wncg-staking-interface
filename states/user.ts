@@ -1,8 +1,11 @@
 import { atom } from 'jotai'
+import { atomWithObservable } from 'jotai/utils'
+import { interval, map } from 'rxjs'
 import { roundToNearestMinutes } from 'date-fns'
 
 import { UnstakePhase } from 'constants/types'
 import { configService } from 'services/config'
+
 export type AllowanceMap = {
   [address: string]: boolean
 }
@@ -32,21 +35,6 @@ export const balancesAtom = atom((get) => {
   }
 })
 
-export const isCooldownWindowAtom = atom((get) => {
-  const unstakePhase = get(unstakePhaseAtom)
-  return unstakePhase === UnstakePhase.CooldownWindow
-})
-
-export const isWithdrawWindowAtom = atom((get) => {
-  const unstakePhase = get(unstakePhaseAtom)
-  return unstakePhase === UnstakePhase.WithdrawWindow
-})
-
-export const isUnstakeWindowAtom = atom((get) => {
-  const unstakePhase = get(unstakePhaseAtom)
-  return unstakePhase !== UnstakePhase.Idle
-})
-
 export const roundedTimestampsAtom = atom((get) => {
   const [cooldownEndsAt, withdrawEndsAt] = get(timestampsAtom)
   return [
@@ -55,18 +43,27 @@ export const roundedTimestampsAtom = atom((get) => {
   ]
 })
 
-// const nowAtom = atom(Date.now())
-const nowAtom = atom(0)
+// NOTE: Timestamp
+const nowSubject = interval(1_000).pipe(map(() => Date.now()))
+export const nowAtom = atomWithObservable(() => nowSubject, {
+  initialValue: 0,
+})
 
-export const unstakePhaseAtom = atom((get) => {
-  const [cooldownEndsAt, withdrawEndsAt] = get(timestampsAtom)
+export const unstakePhaseAtom = atom(async (get) => {
+  const timestamps = get(timestampsAtom)
+
+  if (timestamps.every((t) => t === 0)) {
+    return UnstakePhase.Idle
+  }
+
   const now = get(nowAtom)
+  const [cooldownEndsAt, withdrawEndsAt] = timestamps
 
   switch (true) {
-    case cooldownEndsAt > now:
-      return UnstakePhase.CooldownWindow
-    case withdrawEndsAt > now:
+    case withdrawEndsAt >= now && now > cooldownEndsAt:
       return UnstakePhase.WithdrawWindow
+    case cooldownEndsAt >= now:
+      return UnstakePhase.CooldownWindow
     default:
       return UnstakePhase.Idle
   }

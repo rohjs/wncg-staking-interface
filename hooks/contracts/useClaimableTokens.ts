@@ -12,7 +12,7 @@ import { useStaking } from '../useStaking'
 const FN = 'claimable_tokens'
 const ABI = findAbiFromLiquidityGauge(FN)
 
-const log = createLogger(`black`)
+const log = createLogger(`orange`)
 
 export function useClaimableTokens() {
   const { liquidityGaugeAddress } = useStaking()
@@ -26,9 +26,11 @@ export function useClaimableTokens() {
     args: [stakingAddress],
     enabled: !!liquidityGaugeAddress,
     watch: true,
-    suspense: true,
-    onSettled() {
+    onSuccess() {
       log(`claimable tokens`)
+    },
+    onError(error) {
+      log(`claimable tokens`, error)
     },
   })
 

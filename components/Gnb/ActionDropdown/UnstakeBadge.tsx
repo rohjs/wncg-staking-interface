@@ -2,26 +2,26 @@ import { memo } from 'react'
 import { useAtomValue } from 'jotai'
 import { AnimatePresence } from 'framer-motion'
 
-import { isUnstakeWindowAtom, isWithdrawWindowAtom } from 'states/user'
+import { unstakePhaseAtom } from 'states/user'
 import { pop } from 'constants/motionVariants'
+import { UnstakePhase } from 'constants/types'
 
 import { StyledActionDropdownUnstakeBadge } from './styled'
 import SvgIcon from 'components/SvgIcon'
 
 function ActionDropdownUnstakeBadge() {
-  const isUnstakeWindow = useAtomValue(isUnstakeWindowAtom)
-  const isWithdrawWindow = useAtomValue(isWithdrawWindowAtom)
+  const unstakePhase = useAtomValue(unstakePhaseAtom)
 
   return (
     <AnimatePresence>
-      {isUnstakeWindow && (
+      {unstakePhase !== UnstakePhase.Idle && (
         <StyledActionDropdownUnstakeBadge
           className="unstakeBadge"
           initial="initial"
           animate="animate"
           exit="exit"
           variants={pop}
-          $active={isWithdrawWindow}
+          $active={unstakePhase === UnstakePhase.WithdrawWindow}
         >
           <SvgIcon className="unlock" icon="unlock" />
           <SvgIcon className="lock" icon="lock" />

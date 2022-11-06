@@ -6,7 +6,8 @@ import { RESET } from 'jotai/utils'
 import { useWaitForTransaction } from 'wagmi'
 
 import { pendingCooldownTxAtom } from 'states/form'
-import { isUnstakeWindowAtom, timestampsAtom } from 'states/user'
+import { timestampsAtom, unstakePhaseAtom } from 'states/user'
+import { UnstakePhase } from 'constants/types'
 import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
 import { cooldownMachine, currentPage } from './stateMachine'
@@ -19,7 +20,8 @@ const log = createLogger('black')
 
 function CooldownModal() {
   const [cooldownEndsAt] = useAtomValue(timestampsAtom)
-  const isUnstakeWindow = useAtomValue(isUnstakeWindowAtom)
+  const unstakePhase = useAtomValue(unstakePhaseAtom)
+  const isUnstakeWindow = unstakePhase !== UnstakePhase.Idle
 
   const [pendingTx, setPendingTx] = useAtom(pendingCooldownTxAtom)
   const { hash: pendingHash } = pendingTx
@@ -49,16 +51,11 @@ function CooldownModal() {
   const page = useMemo(() => currentPage(state.value), [state.value])
 
   useEffect(() => {
-    console.log(111, isUnstakeWindow)
-
     if (isUnstakeWindow) send('SUCCESS')
-  }, [isUnstakeWindow, send])
+  }, [send, isUnstakeWindow])
 
   useUnmount(() => {
-    if (!!state.done) {
-      console.log('>>>>>>> resett')
-      setPendingTx(RESET)
-    }
+    if (!!state.done) setPendingTx(RESET)
   })
 
   return (

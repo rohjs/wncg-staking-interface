@@ -11,7 +11,7 @@ import { findAbiFromStaking } from 'utils/wagmi'
 const FN = 'totalStaked'
 const ABI = findAbiFromStaking(FN)
 
-const log = createLogger(`black`)
+const log = createLogger(`orange`)
 
 export function useTotalStaked() {
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
@@ -32,6 +32,9 @@ export function useTotalStaked() {
         (data as unknown as BigNumber)?.toString() || 0
       )
       setTotalStaked(totalStaked)
+    },
+    onError(error) {
+      log(`total staked`, error)
     },
   })
 }
