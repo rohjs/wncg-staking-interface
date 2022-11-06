@@ -66,7 +66,7 @@ function ActionDropdownMenu({ close }: ActionDropdownMenuProps) {
       aria-orientation="vertical"
       role="menu"
     >
-      <h3 className="hidden">Staking wallet</h3>
+      <h3 className="a11y">Staking wallet</h3>
 
       <StakedBalance>
         <Rewards close={close} />

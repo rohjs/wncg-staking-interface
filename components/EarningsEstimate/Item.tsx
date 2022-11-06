@@ -60,7 +60,7 @@ function EarningsEstimateItem({
             className="estimate"
             key={`earningsEstimateItem:${period}:${address}`}
           >
-            <dt className="hidden">{symbol} rewards</dt>
+            <dt className="a11y">{symbol} rewards</dt>
             <dd className="amount" style={{ color: getTokenColor(address) }}>
               <TokenIcon address={address} $size={14} />
               <CountUp end={estimations[i]} decimals={4} />

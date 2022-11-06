@@ -26,7 +26,7 @@ const Terms: NextPage = () => {
         </header>
 
         <section className="section">
-          <h2 className="hidden">Abstract</h2>
+          <h2 className="a11y">Abstract</h2>
           <p>
             Welcome to 
             <Link href="/wncg">https://stake.nine-chronicles.com/wncg</Link>, a

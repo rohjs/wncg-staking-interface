@@ -52,11 +52,11 @@ function SelectRewards({ register, isPending = false }: SelectRewardsProps) {
             </div>
 
             <dl>
-              <dt className="hidden">Earned {symbol} reward</dt>
+              <dt className="a11y">Earned {symbol} reward</dt>
               <dd className="amount">
                 <NumberFormat value={amount} decimals={8} prefix="+ " />
               </dd>
-              <dt className="hidden">Earned {symbol} reward in USD</dt>
+              <dt className="a11y">Earned {symbol} reward in USD</dt>
               <dd className="fiatValue">
                 <SvgIcon icon="approximate" $size={24} />
                 <CountUp {...usdCountUpOption} end={fiatValue} />

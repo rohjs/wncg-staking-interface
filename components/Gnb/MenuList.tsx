@@ -8,7 +8,7 @@ import SvgIcon from 'components/SvgIcon'
 function MenuList() {
   return (
     <StyledMenuList className="menuList">
-      <h1 className="hidden">Menu</h1>
+      <h1 className="a11y">Menu</h1>
 
       <ul>
         <li>

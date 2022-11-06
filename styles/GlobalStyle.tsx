@@ -22,6 +22,7 @@ const GlobalStyle = createGlobalStyle`
     height: 100vh;
     overflow: hidden;
     font-family: ${fontFamily.text};
+    color: var(--white);
     transition: 100ms;
   }
 

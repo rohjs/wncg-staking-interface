@@ -36,7 +36,7 @@ function StakedBalance({ children, className }: StakedBalanceProps) {
 
         <dl className="detailList">
           <div className="detailItem">
-            <dt className="hidden">Your balance</dt>
+            <dt className="a11y">Your balance</dt>
             <dd>
               {isConnected ? (
                 <NumberFormat
@@ -58,7 +58,7 @@ function StakedBalance({ children, className }: StakedBalanceProps) {
 
           {hasStakedBalance && (
             <div className="detailItem">
-              <dt className="hidden">Your balance in USD</dt>
+              <dt className="a11y">Your balance in USD</dt>
               <dd className="fiatValue">
                 <SvgIcon icon="approximate" />
                 <NumberFormat

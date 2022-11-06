@@ -65,20 +65,20 @@ function ActionDropdownMenuUnstakePeriod() {
 
       <dl className="detailList" style={{ position: 'relative' }}>
         <div className="detailItem timeDistance">
-          <dt className="hidden">Time left</dt>
+          <dt className="a11y">Time left</dt>
           <dd aria-label={timeDistanceDesc}>
             <Timer expiresAt={endsAt} /> left
           </dd>
         </div>
 
         <div className="detailItem timePeriod">
-          <dt className="hidden">Withdraw window starts at</dt>
+          <dt className="a11y">Withdraw window starts at</dt>
           <dd>
             <time dateTime={roundedCooldownEndsAt.toString()}>
               {format(roundedCooldownEndsAt, datetimePattern)}
             </time>
           </dd>
-          <dt className="hidden">Withdraw window ends at</dt>
+          <dt className="a11y">Withdraw window ends at</dt>
           <dd className="tilde">
             <time dateTime={roundedWithdrawEndsAt.toString()}>
               {format(roundedWithdrawEndsAt, datetimePattern)}
