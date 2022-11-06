@@ -13,6 +13,15 @@ const nextConfig = {
     prependData: '@use "main" as *;',
   },
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/wncg',
+        permanent: true,
+      },
+    ]
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
