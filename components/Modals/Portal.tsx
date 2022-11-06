@@ -5,7 +5,7 @@ type ModalPortalProps = {
   children: ReactNode
 }
 
-export const ModalPortal = ({ children }: ModalPortalProps) => {
+const ModalPortal = ({ children }: ModalPortalProps) => {
   if (
     !children ||
     typeof window === 'undefined' ||
@@ -16,3 +16,5 @@ export const ModalPortal = ({ children }: ModalPortalProps) => {
 
   return createPortal(children, document.getElementById('modal')!)
 }
+
+export default ModalPortal

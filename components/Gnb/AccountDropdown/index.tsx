@@ -1,5 +1,4 @@
-import { memo, MouseEvent, Suspense, useState } from 'react'
-import dynamic from 'next/dynamic'
+import { memo, MouseEvent, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import styled from 'styled-components'
 
@@ -7,11 +6,8 @@ import { fadeIn } from 'constants/motionVariants'
 import { useAccount } from 'hooks'
 
 import Connect from './Connect'
+import Menu from './Menu'
 import Toggle from './Toggle'
-
-const Menu = dynamic(() => import('./Menu'), {
-  suspense: true,
-})
 
 const StyledAccountDropdown = styled(motion.div)`
   position: relative;
@@ -44,13 +40,7 @@ function AccountDropdown() {
             exit="exit"
             variants={fadeIn}
           >
-            <AnimatePresence>
-              {show && (
-                <Suspense>
-                  <Menu close={close} />
-                </Suspense>
-              )}
-            </AnimatePresence>
+            <AnimatePresence>{show && <Menu close={close} />}</AnimatePresence>
             <Toggle toggle={toggle} />
           </StyledAccountDropdown>
         )}

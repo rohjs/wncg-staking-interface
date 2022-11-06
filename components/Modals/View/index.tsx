@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic'
 import { useAtomValue } from 'jotai'
 
 import { isMobileAtom, Modal, ModalCategory } from 'states/ui'
@@ -13,37 +12,20 @@ import {
   StyledModalContainer,
   StyledModalOverlay,
 } from 'components/Modals/shared/styled'
-
-const StakeModal = dynamic(() => import('components/staking/StakeModal'), {
-  suspense: true,
-})
-const ClaimRewardModal = dynamic(() => import('./ClaimRewardModal'), {
-  suspense: true,
-})
-const ConnectWalletModal = dynamic(() => import('./ConnectWalletModal'), {
-  suspense: true,
-})
-const CooldownModal = dynamic(() => import('./CooldownModal'), {
-  suspense: true,
-})
-const JoinModal = dynamic(() => import('components/Pool/Join/Modal'), {
-  suspense: true,
-})
-const ExitModal = dynamic(() => import('./ExitModal'), {
-  suspense: true,
-})
-const SwitchNetworkModal = dynamic(() => import('./SwitchNetworkModal'), {
-  suspense: true,
-})
-const WithdrawModal = dynamic(() => import('./WithdrawModal'), {
-  suspense: true,
-})
+import JoinModal from 'components/Pool/Join/Modal'
+import StakeModal from 'components/staking/StakeModal'
+import ClaimRewardModal from './ClaimRewardModal'
+import ConnectWalletModal from './ConnectWalletModal'
+import CooldownModal from './CooldownModal'
+import ExitModal from './ExitModal'
+import SwitchNetworkModal from './SwitchNetworkModal'
+import WithdrawModal from './WithdrawModal'
 
 type ModalViewProps = {
   modal: Modal
 }
 
-export function ModalView({ modal }: ModalViewProps) {
+function ModalView({ modal }: ModalViewProps) {
   const isMobile = useAtomValue(isMobileAtom)
 
   const variants = isMobile ? modalMobileVariants : modalDesktopVariants
@@ -51,14 +33,12 @@ export function ModalView({ modal }: ModalViewProps) {
   return (
     <StyledModalOverlay
       variants={overlayVariants}
-      key={`${modal.category}.overlay`}
       initial="initial"
       animate="animate"
       exit="exit"
       transition={{ duration: 0.4 }}
     >
       <StyledModalContainer
-        key={`${modal.category}.modal`}
         variants={variants}
         initial="initial"
         animate="animate"
@@ -70,6 +50,8 @@ export function ModalView({ modal }: ModalViewProps) {
     </StyledModalOverlay>
   )
 }
+
+export default ModalView
 
 function renderModal(modal: Modal) {
   const { category, props } = modal

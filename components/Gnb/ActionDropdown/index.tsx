@@ -1,16 +1,12 @@
-import { memo, MouseEvent, Suspense, useState } from 'react'
-import dynamic from 'next/dynamic'
+import { memo, MouseEvent, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
 import { appearInDown } from 'constants/motionVariants'
 import { useAccount } from 'hooks'
 
 import { StyledActionDropdown } from './styled'
+import Menu from './Menu'
 import Toggle from './Toggle'
-
-const Menu = dynamic(() => import('./Menu'), {
-  suspense: true,
-})
 
 function ActionDropdown() {
   const [show, setShow] = useState(false)
@@ -36,13 +32,7 @@ function ActionDropdown() {
           exit="exit"
           variants={appearInDown}
         >
-          <AnimatePresence>
-            {show && (
-              <Suspense>
-                <Menu close={close} />
-              </Suspense>
-            )}
-          </AnimatePresence>
+          <AnimatePresence>{show && <Menu close={close} />}</AnimatePresence>
 
           <Toggle toggle={toggle} />
         </StyledActionDropdown>
