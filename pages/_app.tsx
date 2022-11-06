@@ -42,7 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      {isProd && (
+      {isProd && !!process.env.NEXT_PUBLIC_HOTJAR_SITE_ID && (
         <Script
           id="hotjar"
           strategy="afterInteractive"
