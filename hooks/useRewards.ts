@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
-import { useAtomValue } from 'jotai'
 import { parseUnits } from 'ethers/lib/utils'
 
-import { rewardsAtom } from 'states/user'
 import { configService } from 'services/config'
+import { useRewards as useFetchRewards } from './contracts/useRewards'
 import { useFiatCurrency } from './useFiatCurrency'
 import { usePrices } from './usePrices'
 import { useStaking } from './useStaking'
 
 export function useRewards() {
+  const { data: rewards = [] } = useFetchRewards()
   const { toFiat } = useFiatCurrency()
   const { priceFor } = usePrices()
   const {
@@ -17,8 +17,6 @@ export function useRewards() {
     rewardTokenDecimals,
     rewardTokenSymbols,
   } = useStaking()
-
-  const rewards = useAtomValue(rewardsAtom)
 
   const scaledRewards = useMemo(
     () =>

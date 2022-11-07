@@ -18,11 +18,10 @@ import { configService } from 'services/config'
 import { DEFAULT_SEO } from 'lib/seo'
 import wagmiClient from 'lib/wagmi'
 
+import GlobalStyle from 'styles/GlobalStyle'
 import Effects from 'components/Effects'
 import Layout from 'components/Layout'
 import Modals from 'components/Modals'
-import { ToastContainer } from 'components/ToastContainer'
-import GlobalStyle from 'styles/GlobalStyle'
 
 type AppProps = NextAppProps & {
   pageProps: {
@@ -69,7 +68,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
               </Layout>
               <Modals />
-              <ToastContainer />
               <Effects />
             </WagmiConfig>
           </Provider>

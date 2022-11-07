@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
 import type { BigNumber } from 'ethers'
 import { useContractReads } from 'wagmi'
 import { isPast } from 'date-fns'
+import type { UseQueryResult } from 'wagmi/dist/declarations/src/hooks/utils'
 
 import { stakingContractAddressAtom } from 'states/staking'
-import { timestampsAtom } from 'states/user'
 import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
 import { findAbiFromStaking } from 'utils/wagmi'
@@ -23,7 +22,6 @@ export function useTimestamps() {
   const { hasStakedBalance } = useStakedBalance()
 
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
-  const setTimestamps = useUpdateAtom(timestampsAtom)
 
   const contracts = useMemo(
     () =>
@@ -37,11 +35,11 @@ export function useTimestamps() {
     [account, stakingAddress]
   )
 
-  useContractReads({
+  return useContractReads({
     contracts,
     enabled: !!account && hasStakedBalance,
     watch: true,
-    onSuccess(data: unknown = []) {
+    select(data: unknown = []) {
       log(`timestamps`)
 
       let timestamps = (data as BigNumber[]).map(
@@ -53,10 +51,13 @@ export function useTimestamps() {
         timestamps = [0, 0]
       }
 
-      setTimestamps(timestamps)
+      return timestamps
+    },
+    onSettled() {
+      log(`timestamps`)
     },
     onError(error) {
       log(`timestamps`, error)
     },
-  })
+  }) as UseQueryResult<number[], any>
 }

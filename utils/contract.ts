@@ -37,9 +37,7 @@ export function associateBalances(
 ): BalanceMap {
   const entries = balances.map((balance, i) => {
     const address = addresses[i].toLowerCase()
-    const decimals = getTokenInfo(address).decimals
-    const amount = formatUnits(balance?.toString() || '0', decimals)
-    return [address, amount]
+    return [address, balance]
   })
 
   return Object.fromEntries(entries)
@@ -115,4 +113,48 @@ export function associateStakingContractData(data?: unknown[]) {
   }
 
   return result
+}
+
+export function associate(data: any[]) {
+  const [
+    earmarkIncentiveFee,
+    feeDenominator,
+    liquidityGaugeAddress,
+    rewardToken,
+    stakedTokenAddress,
+    balEmissionPerSec,
+    wncgEmissionPerSec,
+    cooldownSeconds,
+    unstakeWindow,
+  ] = data
+
+  const earmarkIncentivePcnt = Math.min(
+    bnum(earmarkIncentiveFee).div(feeDenominator).toNumber() ?? 0.01,
+    1
+  )
+
+  const rewardTokenAddress = rewardToken?.toLowerCase() ?? ''
+
+  const rewardTokensList = uniqAddress([rewardTokenAddress, configService.bal])
+
+  const rewardTokenDecimals = rewardTokensList.map(
+    (address) => getTokenInfo(address).decimals
+  )
+
+  const rewardTokenSymbols = rewardTokensList.map(
+    (address) => getTokenInfo(address).symbol
+  )
+
+  return {
+    earmarkIncentivePcnt,
+    emissions: [wncgEmissionPerSec, balEmissionPerSec],
+    liquidityGaugeAddress,
+    rewardTokenAddress,
+    rewardTokensList,
+    rewardTokenDecimals,
+    rewardTokenSymbols,
+    stakedTokenAddress,
+    cooldownWindowPeriod: cooldownSeconds,
+    withdrawWindowPeriod: unstakeWindow,
+  }
 }

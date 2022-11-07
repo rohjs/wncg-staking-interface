@@ -1,12 +1,14 @@
-import { useEffect, useMemo } from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useMemo } from 'react'
+import { useAtomValue } from 'jotai'
+import type { BigNumber } from 'ethers'
 import { useContractReads } from 'wagmi'
+import type { UseQueryResult } from 'wagmi/dist/declarations/src/hooks/utils'
 
-import { stakingContractAddressAtom, stakingDataAtom } from 'states/staking'
-import { associateStakingContractData } from 'utils/contract'
+import { stakingContractAddressAtom } from 'states/staking'
 import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
 import { findAbiFromStaking } from 'utils/wagmi'
+import { formatUnits } from 'ethers/lib/utils'
 
 const log = createLogger(`orange`)
 
@@ -24,7 +26,6 @@ const FNS = [
 const ABIS = findAbiFromStaking(...FNS)
 
 export function useStakingContractData() {
-  const [stakingData, setStakingContractData] = useAtom(stakingDataAtom)
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
 
   const contracts = useMemo(
@@ -38,25 +39,51 @@ export function useStakingContractData() {
     [stakingAddress]
   )
 
-  const staleTime = useMemo(
-    () => (stakingData == null ? undefined : Infinity),
-    [stakingData]
-  )
-
-  const { data } = useContractReads({
+  return useContractReads({
     contracts,
     cacheTime: Infinity,
-    staleTime,
     enabled: !!stakingAddress,
+    suspense: true,
+    select(data: unknown = []) {
+      const [
+        earmarkIncentiveFee,
+        feeDenominator,
+        balancerGauge,
+        rewardToken,
+        stakedToken,
+        balEmissionPerSec,
+        wncgEmissionPerSec,
+        cooldownSeconds,
+        unstakeWindow,
+      ] = data as [
+        BigNumber,
+        BigNumber,
+        string,
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ]
+
+      return [
+        earmarkIncentiveFee?.toNumber() ?? 0,
+        feeDenominator?.toNumber() ?? 0,
+        balancerGauge ?? '',
+        rewardToken?.toLowerCase() ?? '',
+        stakedToken?.toLowerCase() ?? '',
+        formatUnits(balEmissionPerSec?.toString() ?? 0),
+        formatUnits(wncgEmissionPerSec?.toString() ?? 0),
+        cooldownSeconds?.toNumber() ?? 0,
+        unstakeWindow?.toNumber() ?? 0,
+      ]
+    },
     onSuccess() {
       log(`staking`)
     },
     onError(error) {
       log(`staking`, error)
     },
-  })
-
-  useEffect(() => {
-    if (!stakingData) setStakingContractData(associateStakingContractData(data))
-  }, [stakingData, setStakingContractData, data])
+  }) as UseQueryResult<Array<string | number>, any>
 }

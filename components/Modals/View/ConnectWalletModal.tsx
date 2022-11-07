@@ -21,6 +21,8 @@ function ConnectWalletModal() {
   })
 
   function connect(e: MouseEvent<HTMLButtonElement>) {
+    console.log('>>> CONNECT')
+
     const index = Number(e.currentTarget.value)
     console.log(index)
     const connector = connectors[index]
@@ -57,7 +59,6 @@ function ConnectWalletModal() {
               type="button"
               onClick={connect}
               value={i}
-              disabled={!connector.ready}
             >
               <SvgIcon icon={connector.id as SvgIconType} $size={64} />
               {renderButtonLabel(connector.name)}

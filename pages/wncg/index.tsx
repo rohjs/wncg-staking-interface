@@ -1,16 +1,23 @@
+import { Suspense } from 'react'
 import type { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
+import { AnimatePresence } from 'framer-motion'
 
 import { STAKING_SEO } from 'lib/seo'
 
 import { StyledWncgStakingPage } from 'styles/styled'
-import Dashboard from 'components/staking/Dashboard'
+import ErrorBoundary from 'components/ErrorBoundary'
 import Form from 'components/staking/Form'
 import Header from 'components/staking/Header'
-import { AnimatePresence } from 'framer-motion'
 import Pool from 'components/Pool'
+import Loading from 'components/Loading'
+
+const Dashboard = dynamic(() => import('components/staking/Dashboard'), {
+  suspense: true,
+})
 
 const WncgStaking: NextPage = () => {
   const { query } = useRouter()
@@ -33,7 +40,11 @@ const WncgStaking: NextPage = () => {
           <Form />
         </div>
         <div className="right">
-          <Dashboard />
+          <ErrorBoundary fallback={<Loading>Loading: ErrorBoundary</Loading>}>
+            <Suspense fallback={<Loading>Loading: Suspense</Loading>}>
+              <Dashboard />
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </StyledWncgStakingPage>
 

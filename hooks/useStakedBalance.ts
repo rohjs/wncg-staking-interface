@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
 
-import { stakedTokenBalancesAtom } from 'states/user'
 import { legacyModeAtom } from 'states/userSettings'
 import { configService } from 'services/config'
 import { bnum } from 'utils/num'
 import { useFiatCurrency } from './useFiatCurrency'
+import { useStakedBalances } from './contracts'
 
 const legacyContractIndex = configService.stakingContractAddresses.findIndex(
   (address) => address === configService.legacyStakingAddress
@@ -16,9 +16,9 @@ const stakingContractIndex = configService.stakingContractAddresses.indexOf(
 
 export function useStakedBalance() {
   const { bptToFiat } = useFiatCurrency()
+  const { data: stakedBalances = [] } = useStakedBalances()
 
   const legacyMode = useAtomValue(legacyModeAtom)
-  const stakedBalances = useAtomValue(stakedTokenBalancesAtom)
 
   const currentVersionIndex = useMemo(
     () => (legacyMode ? legacyContractIndex : stakingContractIndex),

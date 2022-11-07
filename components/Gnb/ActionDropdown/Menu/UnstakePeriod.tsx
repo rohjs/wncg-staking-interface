@@ -3,11 +3,7 @@ import { useAtomValue } from 'jotai'
 import { format, formatDistanceToNow } from 'date-fns'
 
 import { ModalCategory } from 'states/ui'
-import {
-  roundedTimestampsAtom,
-  timestampsAtom,
-  unstakePhaseAtom,
-} from 'states/user'
+import { roundedTimestampsAtom, unstakePhaseAtom } from 'states/user'
 import { fadeIn } from 'constants/motionVariants'
 import { UnstakePhase } from 'constants/types'
 import { datetimePattern } from 'constants/time'
@@ -16,10 +12,11 @@ import { useModal } from 'hooks'
 import { StyledActionDropdownMenuUnstakePeriod } from './styled'
 import SvgIcon from 'components/SvgIcon'
 import Timer from './Timer'
+import { useTimestamps } from 'hooks/contracts'
 
 function ActionDropdownMenuUnstakePeriod() {
   const { addModal } = useModal()
-  const [cooldownEndsAt, withdrawEndsAt] = useAtomValue(timestampsAtom)
+  const { data: [cooldownEndsAt, withdrawEndsAt] = [] } = useTimestamps()
   const [roundedCooldownEndsAt, roundedWithdrawEndsAt] = useAtomValue(
     roundedTimestampsAtom
   )

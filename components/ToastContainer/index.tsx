@@ -1,20 +1,16 @@
-import { useMemo } from 'react'
+import { MouseEvent, useMemo } from 'react'
 import {
   ToastContainer as ReactToastContainer,
   ToastContainerProps,
+  CloseButtonProps,
 } from 'react-toastify'
+import { useAtomValue } from 'jotai'
 
-import { isDesktopAtom } from 'states/ui'
 import {
   MAX_TOAST_LENGTH_DESKTOP,
   MAX_TOAST_LENGTH_MOBILE,
 } from 'constants/toast'
-
-import type { MouseEvent } from 'react'
-import type { CloseButtonProps } from 'react-toastify'
-import { useAtomValue } from 'jotai'
-
-import { isMobileAtom } from 'states/ui'
+import { isDesktopAtom, isMobileAtom } from 'states/ui'
 
 import SvgIcon from 'components/SvgIcon'
 

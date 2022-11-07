@@ -1,11 +1,21 @@
-import { memo } from 'react'
+import { memo, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
 import { StyledGnb } from './styled'
-import AccountDropdown from './AccountDropdown'
-import ActionDropdown from './ActionDropdown'
-import Claim from './Claim'
+import Loading from 'components/Loading'
+
 import MenuList from './MenuList'
+
+const AccountDropdown = dynamic(() => import('./AccountDropdown'), {
+  suspense: true,
+})
+const ActionDropdown = dynamic(() => import('./ActionDropdown'), {
+  suspense: true,
+})
+const Claim = dynamic(() => import('./Claim'), {
+  suspense: true,
+})
 
 function Gnb() {
   return (
@@ -14,15 +24,21 @@ function Gnb() {
         <h1 className="logo">
           <Link href="/wncg">WNCG Staking</Link>
         </h1>
-        <ActionDropdown />
+        <Suspense fallback={<Loading>ActionDropdown</Loading>}>
+          <ActionDropdown />
+        </Suspense>
       </div>
 
       <div className="right">
         <MenuList />
-        <AccountDropdown />
+        <Suspense fallback={<Loading>AccountDropdown</Loading>}>
+          <AccountDropdown />
+        </Suspense>
       </div>
 
-      <Claim />
+      <Suspense fallback={<Loading>Claim</Loading>}>
+        <Claim />
+      </Suspense>
     </StyledGnb>
   )
 }

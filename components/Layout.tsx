@@ -48,6 +48,7 @@ function Layout({ children }: LayoutProps) {
         >
           <Gnb />
           <div className="content">{children}</div>
+
           <GlobalFooter />
         </StyledMain>
       </StyledLayout>

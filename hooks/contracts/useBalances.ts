@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useSetAtom } from 'jotai'
 import type { BigNumber } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
 import { useBalance, useContractReads } from 'wagmi'
 
 import { etherBalanceAtom, tokenBalancesAtom } from 'states/user'
@@ -55,19 +56,25 @@ export function useBalances() {
     enabled: !!account,
     watch: true,
     onSuccess(data: unknown) {
-      log(`balances`)
+      log(`ETH balances`)
       setEtherBalance((data as FetchBalanceResult)?.formatted || '0')
     },
     onError(error) {
-      log(`balances`, error)
+      log(`ETH balances`, error)
     },
   })
 
-  useContractReads({
+  return useContractReads({
     contracts,
     enabled: !!account,
     watch: true,
+    select(data: unknown = []) {
+      return (data as FetchBalanceResult[]).map((result) => {
+        return formatUnits(result.value?.toString() || '0', result.decimals)
+      })
+    },
     onSuccess(data: unknown = []) {
+      log(`balances`)
       const balanceMap = associateBalances(data as BigNumber[], addresses)
       setTokenBalances(balanceMap)
     },

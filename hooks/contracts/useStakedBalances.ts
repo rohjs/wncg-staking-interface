@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
-import { useSetAtom } from 'jotai'
 import type { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { useContractReads } from 'wagmi'
+import type { UseQueryResult } from 'wagmi/dist/declarations/src/hooks/utils'
 
-import { stakedTokenBalancesAtom } from 'states/user'
 import { configService } from 'services/config'
 import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
@@ -18,7 +17,6 @@ const log = createLogger(`green`)
 
 export function useStakedBalances() {
   const { account } = useAccount()
-  const setStakedBalances = useSetAtom(stakedTokenBalancesAtom)
 
   const contracts = useMemo(
     () =>
@@ -32,20 +30,22 @@ export function useStakedBalances() {
     [account]
   )
 
-  useContractReads({
+  return useContractReads({
     contracts,
+    cacheTime: Infinity,
     enabled: !!account,
     watch: true,
-    onSuccess(data: unknown = []) {
+    suspense: true,
+    onSettled() {
       log(`staked balances`)
-      const _stakedBalances = data as BigNumber[]
-      const stakedBalances = _stakedBalances.map((amount) =>
-        formatUnits(amount?.toString() || '0')
+    },
+    select(data: unknown = []) {
+      return (data as BigNumber[]).map((amount) =>
+        formatUnits(amount?.toString() ?? '0')
       )
-      setStakedBalances(stakedBalances)
     },
     onError(error) {
       log(`staked balances`, error)
     },
-  })
+  }) as UseQueryResult<string[], any>
 }

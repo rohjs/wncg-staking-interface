@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import type { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { useContractReads } from 'wagmi'
+import type { UseQueryResult } from 'wagmi/dist/declarations/src/hooks/utils'
 
 import { stakingContractAddressAtom } from 'states/staking'
-import { rewardsAtom } from 'states/user'
 import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
 import { findAbiFromStaking } from 'utils/wagmi'
@@ -22,7 +22,6 @@ export function useRewards() {
   const { rewardTokenDecimals } = useStaking()
 
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
-  const setRewards = useSetAtom(rewardsAtom)
 
   const contracts = useMemo(
     () =>
@@ -36,19 +35,20 @@ export function useRewards() {
     [account, stakingAddress]
   )
 
-  useContractReads({
+  return useContractReads({
     contracts,
     enabled: !!account,
     watch: true,
-    onSuccess(data: unknown = []) {
-      log(`rewards`)
-      const rewards = (data as BigNumber[]).map((amount, i) =>
+    select(data: unknown = []) {
+      return (data as BigNumber[]).map((amount, i) =>
         formatUnits(amount?.toString() || '0', rewardTokenDecimals[i] || 18)
       )
-      setRewards(rewards)
+    },
+    onSettled() {
+      log(`rewards`)
     },
     onError(error) {
       log(`rewards`, error)
     },
-  })
+  }) as UseQueryResult<string[], any>
 }

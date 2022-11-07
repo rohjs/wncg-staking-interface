@@ -18,7 +18,7 @@ export function useClaimableTokens() {
   const { liquidityGaugeAddress } = useStaking()
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
 
-  const { data } = useContractRead({
+  return useContractRead({
     address: liquidityGaugeAddress,
     abi: ABI,
     functionName: FN,
@@ -26,6 +26,10 @@ export function useClaimableTokens() {
     args: [stakingAddress],
     enabled: !!liquidityGaugeAddress,
     watch: true,
+    suspense: true,
+    select(data: unknown) {
+      return formatUnits((data as BigNumber)?.toString() ?? 0)
+    },
     onSuccess() {
       log(`claimable tokens`)
     },
@@ -33,12 +37,4 @@ export function useClaimableTokens() {
       log(`claimable tokens`, error)
     },
   })
-
-  const claimableTokens = formatUnits(
-    (data as unknown as BigNumber)?.toString() || 0
-  )
-
-  return {
-    claimableTokens,
-  }
 }
