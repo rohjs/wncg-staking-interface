@@ -57,6 +57,7 @@ export function useAllowances() {
     contracts,
     enabled: !!account,
     watch: true,
+    suspense: true,
     onSuccess(data: unknown = []) {
       log(`allowances`)
       const allowanceMap = associateAllowances(

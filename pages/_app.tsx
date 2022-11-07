@@ -30,7 +30,15 @@ type AppProps = NextAppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const queryClient = useRef(new QueryClient())
+  const queryClient = useRef(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          keepPreviousData: true,
+        },
+      },
+    })
+  )
   const config = configService.env.env
   const isProd = config === 'production'
 

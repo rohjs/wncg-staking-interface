@@ -55,6 +55,7 @@ export function useBalances() {
     addressOrName: account,
     enabled: !!account,
     watch: true,
+    suspense: true,
     onSuccess(data: unknown) {
       log(`ETH balances`)
       setEtherBalance((data as FetchBalanceResult)?.formatted || '0')
@@ -68,6 +69,7 @@ export function useBalances() {
     contracts,
     enabled: !!account,
     watch: true,
+    suspense: true,
     select(data: unknown = []) {
       return (data as FetchBalanceResult[]).map((result) => {
         return formatUnits(result.value?.toString() || '0', result.decimals)

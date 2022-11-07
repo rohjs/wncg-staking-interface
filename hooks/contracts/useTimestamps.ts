@@ -39,6 +39,7 @@ export function useTimestamps() {
     contracts,
     enabled: !!account && hasStakedBalance,
     watch: true,
+    suspense: true,
     select(data: unknown = []) {
       log(`timestamps`)
 

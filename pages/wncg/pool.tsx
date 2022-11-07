@@ -1,8 +1,7 @@
 import type { NextPage } from 'next'
-import dynamic from 'next/dynamic'
 import Head from 'next/head'
 
-const Pool = dynamic(() => import('components/Pool'))
+import Pool from 'components/Pool'
 
 const WncgPool: NextPage = () => {
   return (

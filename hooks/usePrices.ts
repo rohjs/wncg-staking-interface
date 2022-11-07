@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { TOKEN_PRICES_PLACEHOLDERS } from 'constants/tokens'
 import { fetchTokenPrices } from 'lib/coingecko'
-import { fetchCoinmarketCapTokenPrice } from 'lib/coinmarketCap'
 import { uniqAddress } from 'utils/address'
 import { calcPoolTotalValue } from 'utils/calculator'
 import { bnum } from 'utils/num'
@@ -13,7 +12,6 @@ import { useStaking } from './useStaking'
 const options = {
   retry: false,
   staleTime: 60 * 1_000,
-  keepPreviousData: true,
 }
 
 export function usePrices() {
@@ -28,16 +26,15 @@ export function usePrices() {
     [poolTokenAddresses, rewardTokensList]
   )
 
-  const fallbackTokenPrices = useQuery(
-    ['fallbackTokenPrices'],
-    fetchCoinmarketCapTokenPrice,
-    {
-      retry: false,
-      staleTime: Infinity,
-      keepPreviousData: true,
-      placeholderData: TOKEN_PRICES_PLACEHOLDERS,
-    }
-  )
+  // const fallbackTokenPrices = useQuery(
+  //   ['fallbackTokenPrices'],
+  //   fetchCoinmarketCapTokenPrice,
+  //   {
+  //     retry: false,
+  //     staleTime: Infinity,
+  //     placeholderData: TOKEN_PRICES_PLACEHOLDERS,
+  //   }
+  // )
 
   const tokenPrices = useQuery<TokenPrices>(
     ['tokenPrices', addresses],
@@ -75,8 +72,8 @@ export function usePrices() {
   )
 
   const invalidPriceError = useMemo(
-    () => fallbackTokenPrices.isError && tokenPrices.isError,
-    [fallbackTokenPrices.isError, tokenPrices.isError]
+    () => tokenPrices.isError,
+    [tokenPrices.isError]
   )
 
   return {

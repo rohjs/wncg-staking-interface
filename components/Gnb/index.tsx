@@ -1,20 +1,13 @@
 import { memo } from 'react'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
 import { StyledGnb } from './styled'
 
 import MenuList from './MenuList'
 
-const AccountDropdown = dynamic(() => import('./AccountDropdown'), {
-  suspense: true,
-})
-const ActionDropdown = dynamic(() => import('./ActionDropdown'), {
-  suspense: true,
-})
-const Claim = dynamic(() => import('./Claim'), {
-  suspense: true,
-})
+import AccountDropdown from './AccountDropdown'
+import ActionDropdown from './ActionDropdown'
+import Claim from './Claim'
 
 function Gnb() {
   return (

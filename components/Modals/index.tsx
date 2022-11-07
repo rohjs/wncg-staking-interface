@@ -1,14 +1,10 @@
-import dynamic from 'next/dynamic'
 import { useAtomValue } from 'jotai'
 import { AnimatePresence } from 'framer-motion'
 
 import { modalsAtom } from 'states/ui'
 
 import Portal from './Portal'
-
-const View = dynamic(() => import('./View'), {
-  suspense: true,
-})
+import View from './View'
 
 function Modals() {
   const modalList = useAtomValue(modalsAtom)

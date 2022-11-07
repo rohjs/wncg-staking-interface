@@ -39,6 +39,7 @@ export function useRewards() {
     contracts,
     enabled: !!account,
     watch: true,
+    suspense: true,
     select(data: unknown = []) {
       return (data as BigNumber[]).map((amount, i) =>
         formatUnits(amount?.toString() || '0', rewardTokenDecimals[i] || 18)

@@ -13,7 +13,7 @@ export function usePool() {
   const { data: pool, refetch } = useQuery(['pool'], fetchPool, {
     staleTime: STALE_TIME,
     refetchInterval: REFETCH_INTERVAL,
-    keepPreviousData: true,
+    // suspense: true,
   })
 
   const poolId = configService.poolId
