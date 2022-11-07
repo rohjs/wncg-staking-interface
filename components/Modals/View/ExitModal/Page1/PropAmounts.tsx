@@ -1,4 +1,4 @@
-import { memo, Suspense, useMemo } from 'react'
+import { memo, useMemo } from 'react'
 
 import { bnum } from 'utils/num'
 import { getTokenColor, getTokenSymbol } from 'utils/token'
@@ -38,49 +38,47 @@ function ExitModalPage1Step2PropAmounts({
   )
 
   return (
-    <Suspense fallback={`<div>loading...</div>`}>
-      <StyledExitModalPage1Step2PropAmounts className="propAmounts">
-        {exitAmounts.map((amount, i) => {
-          const address = poolTokenAddresses[i]
-          const weight = bnum(poolTokenWeights[i]).times(100).toNumber()
-          const symbol = getTokenSymbol(address)
-          const color = getTokenColor(address)
+    <StyledExitModalPage1Step2PropAmounts className="propAmounts">
+      {exitAmounts.map((amount, i) => {
+        const address = poolTokenAddresses[i]
+        const weight = bnum(poolTokenWeights[i]).times(100).toNumber()
+        const symbol = getTokenSymbol(address)
+        const color = getTokenColor(address)
 
-          if (!address || !weight) return null
+        if (!address || !weight) return null
 
-          return (
-            <div className="detailItem" key={`exitPropAmounts:${symbol}`}>
-              <dt>
-                <TokenIcon address={address} $size={32} />
-                <strong className="symbol" style={{ color }}>
-                  {symbol}
-                </strong>
-                <span className="pcnt">{weight}%</span>
-              </dt>
+        return (
+          <div className="detailItem" key={`exitPropAmounts:${symbol}`}>
+            <dt>
+              <TokenIcon address={address} $size={32} />
+              <strong className="symbol" style={{ color }}>
+                {symbol}
+              </strong>
+              <span className="pcnt">{weight}%</span>
+            </dt>
 
-              <dd>
+            <dd>
+              <CountUp
+                className="amount"
+                end={amount}
+                decimals={4}
+                duration={0.5}
+              />
+              <div className="fiatValue">
+                <SvgIcon icon="approximate" />
                 <CountUp
-                  className="amount"
-                  end={amount}
-                  decimals={4}
+                  className="usdAmount"
+                  end={exitAmountsInFiatValue[i]}
+                  prefix="$"
+                  decimals={2}
                   duration={0.5}
                 />
-                <div className="fiatValue">
-                  <SvgIcon icon="approximate" />
-                  <CountUp
-                    className="usdAmount"
-                    end={exitAmountsInFiatValue[i]}
-                    prefix="$"
-                    decimals={2}
-                    duration={0.5}
-                  />
-                </div>
-              </dd>
-            </div>
-          )
-        })}
-      </StyledExitModalPage1Step2PropAmounts>
-    </Suspense>
+              </div>
+            </dd>
+          </div>
+        )
+      })}
+    </StyledExitModalPage1Step2PropAmounts>
   )
 }
 

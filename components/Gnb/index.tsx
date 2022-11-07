@@ -1,9 +1,8 @@
-import { memo, Suspense } from 'react'
+import { memo } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
 import { StyledGnb } from './styled'
-import Loading from 'components/Loading'
 
 import MenuList from './MenuList'
 
@@ -24,21 +23,15 @@ function Gnb() {
         <h1 className="logo">
           <Link href="/wncg">WNCG Staking</Link>
         </h1>
-        <Suspense fallback={<Loading>ActionDropdown</Loading>}>
-          <ActionDropdown />
-        </Suspense>
+        <ActionDropdown />
       </div>
 
       <div className="right">
         <MenuList />
-        <Suspense fallback={<Loading>AccountDropdown</Loading>}>
-          <AccountDropdown />
-        </Suspense>
+        <AccountDropdown />
       </div>
 
-      <Suspense fallback={<Loading>Claim</Loading>}>
-        <Claim />
-      </Suspense>
+      <Claim />
     </StyledGnb>
   )
 }

@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import { useAtomValue } from 'jotai'
 import { AnimatePresence } from 'framer-motion'
@@ -18,16 +17,7 @@ function Modals() {
     <Portal>
       <AnimatePresence>
         {modalList.map((modal) => (
-          <Suspense
-            key={`modal:suspense:${modal.category}`}
-            fallback={
-              <div style={{ background: '#fff', color: '#000', fontSize: 20 }}>
-                Loading...
-              </div>
-            }
-          >
-            <View key={`modal:${modal.category}`} modal={modal} />
-          </Suspense>
+          <View key={`modal:${modal.category}`} modal={modal} />
         ))}
       </AnimatePresence>
     </Portal>

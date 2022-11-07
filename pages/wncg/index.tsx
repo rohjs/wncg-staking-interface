@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
@@ -41,9 +40,7 @@ const WncgStaking: NextPage = () => {
         </div>
         <div className="right">
           <ErrorBoundary fallback={<Loading>Loading: ErrorBoundary</Loading>}>
-            <Suspense fallback={<Loading>Loading: Suspense</Loading>}>
-              <Dashboard />
-            </Suspense>
+            <Dashboard />
           </ErrorBoundary>
         </div>
       </StyledWncgStakingPage>
