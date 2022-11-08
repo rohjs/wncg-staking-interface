@@ -17,7 +17,6 @@ export type StakingContractData = {
   withdrawWindowPeriod: number
 }
 
-export const totalStakedAtom = atom('0')
 export const stakingDataAtom = freezeAtom(
   atom<StakingContractData | null>(null)
 )

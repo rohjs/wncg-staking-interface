@@ -11,7 +11,7 @@ const endpoint = configService.subgraph
 const poolId = configService.env.poolId
 export const itemsPerPage = 5
 
-const fetchPoolQuery = {
+const fetchPoolStaticDataQuery = {
   query: {
     pool: {
       __args: {
@@ -22,13 +22,7 @@ const fetchPoolQuery = {
       factory: true,
       symbol: true,
       name: true,
-      swapFee: true,
       owner: true,
-      totalWeight: true,
-      totalLiquidity: true,
-      totalShares: true,
-      totalSwapFee: true,
-      totalSwapVolume: true,
       createTime: true,
       tokensList: true,
       tokens: {
@@ -36,16 +30,46 @@ const fetchPoolQuery = {
         name: true,
         decimals: true,
         address: true,
-        balance: true,
         weight: true,
       },
     },
   },
 }
 
-export async function fetchPool(): Promise<Pool> {
-  logger(`${poolId.slice(0, 6)} pool`)
-  const data = await request(endpoint, jsonToGraphQLQuery(fetchPoolQuery))
+export async function fetchPoolStaticData(): Promise<Pool> {
+  logger(`${poolId.slice(0, 6)} pool static data`)
+  const data = await request(
+    endpoint,
+    jsonToGraphQLQuery(fetchPoolStaticDataQuery)
+  )
+  return data?.pool
+}
+
+const fetchPoolDynamicDataQuery = {
+  query: {
+    pool: {
+      __args: {
+        id: poolId,
+      },
+      swapFee: true,
+      totalWeight: true,
+      totalLiquidity: true,
+      totalShares: true,
+      totalSwapFee: true,
+      totalSwapVolume: true,
+      tokens: {
+        balance: true,
+      },
+    },
+  },
+}
+
+export async function fetchPoolDynamicData(): Promise<PoolDynamicData> {
+  logger(`${poolId.slice(0, 6)} pool dynamic data`)
+  const data = await request(
+    endpoint,
+    jsonToGraphQLQuery(fetchPoolDynamicDataQuery)
+  )
   return data?.pool
 }
 

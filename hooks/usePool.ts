@@ -1,35 +1,47 @@
 import { useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
-import { REFETCH_INTERVAL, STALE_TIME } from 'constants/time'
 import { configService } from 'services/config'
-import { fetchPool } from 'lib/graphql'
+import {} from 'lib/graphql'
 import { bnum } from 'utils/num'
 import { getTokenColor, getTokenInfo, getTokenSymbol } from 'utils/token'
-import { useStaking } from './useStaking'
 
 export function usePool() {
-  const { stakedTokenAddress } = useStaking()
-  const { data: pool, refetch } = useQuery(['pool'], fetchPool, {
-    staleTime: STALE_TIME,
-    refetchInterval: REFETCH_INTERVAL,
-    // suspense: true,
-  })
+  const queryClient = useQueryClient()
+  const poolStaticData = queryClient.getQueryData<PoolStaticData>([
+    'poolStaticData',
+    configService.poolId,
+  ])
+  const poolDynamicData = queryClient.getQueryData<PoolDynamicData>([
+    'poolDynamicData',
+    configService.poolId,
+  ])
 
   const poolId = configService.poolId
 
-  const poolSwapFee = useMemo(() => pool?.swapFee || '0', [pool?.swapFee])
+  const poolSwapFee = useMemo(
+    () => poolDynamicData?.swapFee || '0',
+    [poolDynamicData?.swapFee]
+  )
 
-  const poolTokens = useMemo(() => pool?.tokens || [], [pool?.tokens])
+  const poolTokens: PoolToken[] = useMemo(() => {
+    return (
+      poolStaticData?.tokens.map((token, i) => ({
+        ...token,
+        balance: poolDynamicData?.tokens[i]?.balance ?? '0',
+      })) ?? []
+    )
+  }, [poolDynamicData?.tokens, poolStaticData?.tokens])
 
   const poolTokenAddresses = useMemo(
-    () => pool?.tokensList.map((address) => address.toLowerCase()) || [],
-    [pool?.tokensList]
+    () =>
+      poolStaticData?.tokensList.map((address) => address.toLowerCase()) || [],
+    [poolStaticData?.tokensList]
   )
 
   const poolTokenBalances = useMemo(
-    () => poolTokens.map((token) => token.balance),
-    [poolTokens]
+    () => poolDynamicData?.tokens.map((token) => token.balance) ?? [],
+    [poolDynamicData?.tokens]
   )
 
   const poolTokenColors = useMemo(
@@ -58,23 +70,23 @@ export function usePool() {
   )
 
   const poolTotalShares = useMemo(
-    () => pool?.totalShares || '0',
-    [pool?.totalShares]
+    () => poolDynamicData?.totalShares || '0',
+    [poolDynamicData?.totalShares]
   )
 
   const poolTotalLiquidity = useMemo(
-    () => pool?.totalLiquidity || '0',
-    [pool?.totalLiquidity]
+    () => poolDynamicData?.totalLiquidity || '0',
+    [poolDynamicData?.totalLiquidity]
   )
 
   const poolTotalSwapFee = useMemo(
-    () => pool?.totalSwapFee || '0',
-    [pool?.totalSwapFee]
+    () => poolDynamicData?.totalSwapFee || '0',
+    [poolDynamicData?.totalSwapFee]
   )
 
   const poolTotalSwapVolume = useMemo(
-    () => pool?.totalSwapVolume || '0',
-    [pool?.totalSwapVolume]
+    () => poolDynamicData?.totalSwapVolume || '0',
+    [poolDynamicData?.totalSwapVolume]
   )
 
   const poolName = useMemo(() => poolTokenSymbols.join('-'), [poolTokenSymbols])
@@ -94,17 +106,17 @@ export function usePool() {
   }, [poolTokenAddresses])
 
   const bptAddress = useMemo(
-    () => pool?.address || stakedTokenAddress,
-    [pool?.address, stakedTokenAddress]
+    () => poolStaticData?.address,
+    [poolStaticData?.address]
   )
 
   const poolTokenName = useMemo(() => getTokenSymbol(bptAddress), [bptAddress])
 
   return {
-    pool,
     poolId,
     poolName,
     poolSwapFee,
+    poolStaticData,
     poolTokens,
     poolTokenAddresses,
     poolTokenBalances,
@@ -121,6 +133,5 @@ export function usePool() {
     ercTokenIndex,
     nativeAssetIndex,
     bptAddress,
-    refetchPool: refetch,
   }
 }

@@ -1,29 +1,21 @@
-import { Suspense, useMemo } from 'react'
-import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 
-import { percentCountUpOption, usdCountUpOption } from 'constants/countUp'
+import { usdCountUpOption } from 'constants/countUp'
 import { useTotalStaked } from 'hooks/contracts'
 
 import { StyledStakingDashboard } from './styled'
 import CountUp from 'components/CountUp'
 import Loading from 'components/Loading'
-import { useFiatCurrency, usePrices, useStaking } from 'hooks'
-import { calcApr } from 'utils/calculator'
 
 function StakingDashboard() {
-  const { bptToFiat } = useFiatCurrency()
-  const { priceFor } = usePrices()
-  const { data: totalStaked, status } = useTotalStaked()
-  const { emissions, rewardTokensList, status: stakingStatus } = useStaking()
+  const { data: totalStaked } = useTotalStaked()
 
-  const aprs = useMemo(() => {
-    const totalValue = bptToFiat(totalStaked)
-    return emissions.map((emission, i) =>
-      calcApr(emission, priceFor(rewardTokensList[i]), totalValue)
-    )
-  }, [bptToFiat, emissions, priceFor, rewardTokensList, totalStaked])
-
-  console.log(6666, status, aprs, stakingStatus)
+  // const aprs = useMemo(() => {
+  //   const totalValue = bptToFiat(totalStaked)
+  //   return emissions.map((emission, i) =>
+  //     calcApr(emission, priceFor(rewardTokensList[i]), totalValue)
+  //   )
+  // }, [bptToFiat, emissions, priceFor, rewardTokensList, totalStaked])
 
   // const { aprs } = useApr()
   // const { bptToFiat } = useFiatCurrency()

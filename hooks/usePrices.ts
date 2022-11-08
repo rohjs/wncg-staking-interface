@@ -1,24 +1,16 @@
 import { useCallback, useMemo } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
-import { TOKEN_PRICES_PLACEHOLDERS } from 'constants/tokens'
-import { fetchTokenPrices } from 'lib/coingecko'
-import { fetchCoinmarketCapTokenPrice } from 'lib/coinmarketCap'
 import { uniqAddress } from 'utils/address'
 import { calcPoolTotalValue } from 'utils/calculator'
 import { bnum } from 'utils/num'
 import { usePool } from './usePool'
 import { useStaking } from './useStaking'
 
-const options = {
-  retry: false,
-  staleTime: 60 * 1_000,
-}
-
 export function usePrices() {
   const queryClient = useQueryClient()
 
-  const { bptAddress, poolTokenAddresses, poolTokens, poolTotalShares } =
+  const { bptAddress, poolTokens, poolTokenAddresses, poolTotalShares } =
     usePool()
   const { rewardTokensList } = useStaking()
 
@@ -27,47 +19,28 @@ export function usePrices() {
     [poolTokenAddresses, rewardTokensList]
   )
 
-  // const fallbackTokenPrices = useQuery(
-  //   ['fallbackTokenPrices'],
-  //   fetchCoinmarketCapTokenPrice,
-  //   {
-  //     retry: false,
-  //     staleTime: Infinity,
-  //     placeholderData: TOKEN_PRICES_PLACEHOLDERS,
-  //   }
-  // )
-
-  const tokenPrices = useQuery<TokenPrices>(
-    ['tokenPrices', addresses],
-    () => fetchTokenPrices(addresses),
-    {
-      ...options,
-      onError() {
-        const state =
-          queryClient.getQueryData<TokenPrices>(['fallbackTokenPrices']) ||
-          TOKEN_PRICES_PLACEHOLDERS
-        queryClient.setQueryData(['tokenPrices', addresses], state)
-      },
-    }
-  )
-
-  console.log(33, 'TOKEN PRICE STATUS', tokenPrices.status)
+  const tokenPrices = useMemo(() => {
+    const list =
+      queryClient.getQueryData<TokenPrices[]>(['tokenPrices', addresses]) ?? []
+    return Object.fromEntries(list.flatMap((prices) => Object.entries(prices)))
+  }, [addresses, queryClient])
 
   const bptPrice = useMemo(() => {
-    if (!tokenPrices.data) return '0'
-    return bnum(calcPoolTotalValue(poolTokens, tokenPrices.data))
-      .div(poolTotalShares)
-      .toString()
-  }, [poolTokens, poolTotalShares, tokenPrices.data])
+    if (!tokenPrices) return '0'
+    return (
+      bnum(calcPoolTotalValue(poolTokens, tokenPrices))
+        .div(poolTotalShares)
+        .toString() || '0'
+    )
+  }, [poolTokens, poolTotalShares, tokenPrices])
 
   const priceMap = useMemo(() => {
-    const map = tokenPrices.data ?? {}
-    if (!bptAddress) return map
+    if (!bptAddress) return tokenPrices
     return {
-      ...map,
+      ...tokenPrices,
       [bptAddress]: bptPrice,
     }
-  }, [bptAddress, bptPrice, tokenPrices.data])
+  }, [bptAddress, bptPrice, tokenPrices])
 
   const priceFor = useCallback(
     (address = '') => priceMap[address.toLowerCase()] || '0',

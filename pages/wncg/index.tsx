@@ -9,7 +9,6 @@ import { STAKING_SEO } from 'lib/seo'
 
 import { StyledWncgStakingPage } from 'styles/styled'
 import Form from 'components/staking/Form'
-import Dashboard from 'components/staking/Dashboard'
 import Header from 'components/staking/Header'
 import Pool from 'components/Pool'
 
@@ -37,7 +36,9 @@ const WncgStaking: NextPage = () => {
             <Form />
           </Suspense>
         </div>
-        <div className="right">{/* <Dashboard /> */}</div>
+        {/* <div className="right">
+          <Dashboard />
+        </div> */}
       </StyledWncgStakingPage>
 
       <AnimatePresence>{showPoolPage && <Pool isModal />}</AnimatePresence>

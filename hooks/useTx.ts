@@ -8,13 +8,11 @@ import { txListAtom } from 'states/tx'
 import STORAGE_KEYS from 'constants/storageKeys'
 import { MessageService } from 'services/message'
 import { TransactionSubscriptionService } from 'services/transactionSubscription'
-import { usePool } from './usePool'
 import { useProvider } from './useProvider'
 // import { useToast } from './useToast'
 
 export function useTx() {
   const provider = useProvider()
-  const { refetchPool } = usePool()
   // const { addToast } = useToast()
 
   const setTxList = useSetAtom(txListAtom)
@@ -101,10 +99,8 @@ export function useTx() {
       } catch (error: any) {
         rejectTx(transaction.hash, error)
       }
-
-      refetchPool()
     },
-    [refetchPool, rejectTx, resolveTx, txService]
+    [rejectTx, resolveTx, txService]
   )
 
   const resetTx = useCallback(() => {

@@ -6,12 +6,28 @@ import { usePool } from './usePool'
 
 export function useCalculator(action: PoolAction) {
   const { bptBalance } = useBalances()
-  const { pool } = usePool()
+  const { poolStaticData, poolSwapFee, poolTokenBalances, poolTotalShares } =
+    usePool()
 
   const calculator = useMemo(() => {
-    if (!pool) return null
-    return new CalculatorService(pool, bptBalance, action)
-  }, [action, bptBalance, pool])
+    if (!poolStaticData) return null
+
+    return new CalculatorService(
+      action,
+      poolTokenBalances,
+      bptBalance,
+      poolStaticData,
+      poolSwapFee,
+      poolTotalShares
+    )
+  }, [
+    action,
+    bptBalance,
+    poolStaticData,
+    poolSwapFee,
+    poolTokenBalances,
+    poolTotalShares,
+  ])
 
   return calculator
 }

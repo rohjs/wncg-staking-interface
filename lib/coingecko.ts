@@ -1,6 +1,7 @@
 import { coingeckoClient } from 'services/coingeckoClient'
 import { configService } from 'services/config'
-import { convertAddress, uniqAddress } from 'utils/address'
+import { convertAddress } from 'utils/address'
+import { createLogger } from 'utils/log'
 
 type PriceResponse = { [id: string]: TokenFiatPrice }
 
@@ -8,10 +9,11 @@ const FIAT_CURRENCY = 'usd'
 const NATIVE_ASSET_ID = 'ethereum'
 const PLATFORM_ID = 'ethereum'
 
+const log = createLogger('yellow')
+
 async function fetchErcTokenPrices(
-  _addresses: string[] = []
+  addresses: string[] = []
 ): Promise<TokenPrices> {
-  const addresses = uniqAddress(_addresses)
   const tokenAddresses = addresses.map((address) => convertAddress(address))
   const requests: Promise<PriceResponse>[] = []
 
@@ -35,13 +37,13 @@ async function fetchNativeAssetPrice(): Promise<TokenPrices> {
   }
 }
 
-export async function fetchTokenPrices(addresses: string[]) {
+export async function fetchTokenPrices(
+  addresses: string[]
+): Promise<TokenPrices[]> {
   try {
+    log(`token prices`)
     const requests = [fetchErcTokenPrices(addresses), fetchNativeAssetPrice()]
-    const responses = await Promise.all(requests)
-    return Object.fromEntries(
-      responses.flatMap((response) => Object.entries(response))
-    )
+    return await Promise.all(requests)
   } catch (error) {
     throw error
   }

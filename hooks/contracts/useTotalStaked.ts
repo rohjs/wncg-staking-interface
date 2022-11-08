@@ -18,7 +18,7 @@ export function useTotalStaked() {
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
 
   return useContractRead({
-    address: stakingAddress,
+    address: stakingAddress!,
     abi: ABI,
     functionName: FN,
     chainId: networkChainId,

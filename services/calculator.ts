@@ -30,9 +30,12 @@ type PriceImpactOption = {
 
 export default class CalculatorService {
   constructor(
-    public pool: Pool,
-    public bptBalance: string,
     public action: PoolAction,
+    public balances: string[],
+    public bptBalance: string,
+    public pool: PoolStaticData,
+    public swapFee: string,
+    public totalShares: string,
     public useNativeAsset = false,
     public readonly config = configService
   ) {}
@@ -225,17 +228,16 @@ export default class CalculatorService {
     return this.pool.tokensList
   }
 
-  get poolTokens(): PoolToken[] {
+  get poolTokens(): Omit<PoolToken, 'balance'>[] {
     return this.pool.tokens
   }
 
   get poolTokenDecimals(): number[] {
-    return this.poolTokens.map((t) => t.decimals)
+    return this.pool.tokens.map((token) => token.decimals)
   }
 
   get poolTokenBalances(): BigNumber[] {
-    const normalizedBalances = this.poolTokens.map((t) => t.balance)
-    return normalizedBalances.map((b, i) =>
+    return this.balances.map((b, i) =>
       parseUnits(b || '0', this.poolTokenDecimals[i])
     )
   }
@@ -246,11 +248,11 @@ export default class CalculatorService {
   }
 
   get poolTotalShares(): BigNumber {
-    return parseUnits(this.pool.totalShares || '0', POOL_DECIMALS)
+    return parseUnits(this.totalShares || '0', POOL_DECIMALS)
   }
 
   get poolSwapFee(): BigNumber {
-    return parseUnits(this.pool.swapFee || '0', 18)
+    return parseUnits(this.swapFee || '0', 18)
   }
 
   private get sendTokens(): string[] {
