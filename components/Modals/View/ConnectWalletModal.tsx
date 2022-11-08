@@ -21,10 +21,7 @@ function ConnectWalletModal() {
   })
 
   function connect(e: MouseEvent<HTMLButtonElement>) {
-    console.log('>>> CONNECT')
-
     const index = Number(e.currentTarget.value)
-    console.log(index)
     const connector = connectors[index]
 
     initConnect({ connector })

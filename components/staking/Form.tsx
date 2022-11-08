@@ -90,6 +90,7 @@ function StakingForm() {
         placeholder="Enter the number of LP tokens to staking"
         $size="md"
       />
+
       <AvailableTokenAmount
         label="Your LP Tokens (=Available staking)"
         maxAmount={bptBalance}

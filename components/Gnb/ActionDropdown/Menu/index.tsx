@@ -47,7 +47,7 @@ function ActionDropdownMenu({ close }: ActionDropdownMenuProps) {
   )
 
   useMount(() => {
-    window.addEventListener('click', closeOnBlur)
+    window.addEventListener('click', closeOnBlur, { passive: true })
   })
 
   useUnmount(() => {

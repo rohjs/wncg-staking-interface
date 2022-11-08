@@ -1,20 +1,18 @@
-import { memo } from 'react'
+import { memo, Suspense } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
 import { ModalCategory } from 'states/ui'
-import { countUpOption, usdCountUpOption } from 'constants/countUp'
 import { fadeIn } from 'constants/motionVariants'
-import { useAccount, useModal, useRewards } from 'hooks'
+import { useAccount, useModal } from 'hooks'
 
 import { StyledClaim } from './styled'
-import CountUp from 'components/CountUp'
-import SvgIcon from 'components/SvgIcon'
 import Button from 'components/Button'
+import Loading from 'components/Loading'
+import Rewards from './Rewards'
 
 function Claim() {
   const { isConnected } = useAccount()
   const { addModal } = useModal()
-  const { rewards, rewardTokenSymbols, rewardsInFiatValue } = useRewards()
 
   function claim() {
     addModal({
@@ -32,21 +30,9 @@ function Claim() {
           exit="exit"
           variants={fadeIn}
         >
-          {rewardTokenSymbols.map((symbol, i) => {
-            return (
-              <div className="reward" key={`gnb:claim:${symbol}`}>
-                <strong className="amount">
-                  <CountUp {...countUpOption} end={rewards[i]} prefix="+" />
-                </strong>
-                <strong className="usd">
-                  <SvgIcon icon="approximate" />
-                  (
-                  <CountUp {...usdCountUpOption} end={rewardsInFiatValue[i]} />)
-                </strong>
-                <span className="symbol">{symbol}</span>
-              </div>
-            )
-          })}
+          <Suspense fallback={<Loading>CLAIM REWARDS LOADING</Loading>}>
+            <Rewards />
+          </Suspense>
 
           <Button className="claimButton" onClick={claim} $variant="tiny">
             Claim rewards

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 import { usePrevious } from 'react-use'
 import ReactCountUp, { CountUpProps as ReactCountUpProps } from 'react-countup'
 import clsx from 'clsx'
@@ -9,7 +9,7 @@ import { useAccount } from 'hooks'
 import { StyledCountUp, SvgIconSize } from './styled'
 
 type CountUpProps = {
-  end: string | number
+  end?: string | number
   showAlways?: boolean
   showTitle?: boolean
   minAmount?: number
@@ -30,12 +30,14 @@ function CountUp({
 
   const { isConnected } = useAccount()
 
-  const bEnd = bnum(end)
+  const bEnd = bnum(end ?? 0)
   const invalidValue = !bEnd.isFinite() || bEnd.isNaN()
   const showDash = invalidValue || (!showAlways && !isConnected)
 
   useEffect(() => {
-    if (prevEnd !== Number(sanitizeNumber(end))) setStart(prevEnd)
+    if (prevEnd !== Number(sanitizeNumber(end))) {
+      startTransition(() => setStart(prevEnd))
+    }
   }, [end, prevEnd, start])
 
   if (showDash) {

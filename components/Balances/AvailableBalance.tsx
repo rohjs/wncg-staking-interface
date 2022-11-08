@@ -24,7 +24,7 @@ type AvailableBalanceProps = {
 }
 
 function AvailableBalance({ children, className }: AvailableBalanceProps) {
-  const { isConnected } = useAccount()
+  const { isConnected, isDisconnected } = useAccount()
   const { bptBalance, hasBptBalance } = useBalances()
   const { connect } = useConnectWallets()
   const { bptToFiat } = useFiatCurrency()
@@ -42,13 +42,15 @@ function AvailableBalance({ children, className }: AvailableBalanceProps) {
           <div className="detailItem">
             <dt className="a11y">Your balance</dt>
             <dd>
-              {isConnected ? (
+              {isConnected && (
                 <NumberFormat
                   className="value"
                   value={bptBalance}
                   renderText={renderStrong}
                 />
-              ) : (
+              )}
+
+              {isDisconnected && (
                 <button
                   className="connectButton"
                   type="button"

@@ -25,7 +25,7 @@ function Layout({ children }: LayoutProps) {
   const showPoolPage = !!query?.pool
 
   const networkMismatch =
-    (isConnected && Number(chain?.id) !== networkChainId) ?? false
+    (isConnected && Number(chain?.id ?? 0) !== networkChainId) ?? false
 
   const error = networkMismatch
     ? 'networkMismatch'
@@ -47,9 +47,8 @@ function Layout({ children }: LayoutProps) {
           $shrink={!!error}
         >
           <Gnb />
-          <div className="content">{children}</div>
-
           <GlobalFooter />
+          <div className="content">{children}</div>
         </StyledMain>
       </StyledLayout>
 

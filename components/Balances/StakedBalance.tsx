@@ -19,7 +19,7 @@ type StakedBalanceProps = {
 }
 
 function StakedBalance({ children, className }: StakedBalanceProps) {
-  const { isConnected } = useAccount()
+  const { isConnected, isDisconnected } = useAccount()
   const { connect } = useConnectWallets()
   const { bptToFiat } = useFiatCurrency()
   const { hasStakedBalance, stakedBalance } = useStakedBalance()
@@ -38,13 +38,15 @@ function StakedBalance({ children, className }: StakedBalanceProps) {
           <div className="detailItem">
             <dt className="a11y">Your balance</dt>
             <dd>
-              {isConnected ? (
+              {isConnected && (
                 <NumberFormat
                   className="value"
                   value={stakedBalance}
                   renderText={renderStrong}
                 />
-              ) : (
+              )}
+
+              {isDisconnected && (
                 <button
                   className="connectButton"
                   type="button"

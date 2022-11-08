@@ -1,10 +1,11 @@
-import { memo, MouseEvent, useState } from 'react'
+import { memo, MouseEvent, Suspense, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import styled from 'styled-components'
 
 import { fadeIn } from 'constants/motionVariants'
 import { useAccount } from 'hooks'
 
+import Loading from 'components/Loading'
 import Connect from './Connect'
 import Menu from './Menu'
 import Toggle from './Toggle'
@@ -33,16 +34,21 @@ function AccountDropdown() {
     <AnimatePresence>
       <div className="account">
         {isConnected && (
-          <StyledAccountDropdown
-            className="accountDropdown"
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={fadeIn}
-          >
-            <AnimatePresence>{show && <Menu close={close} />}</AnimatePresence>
-            <Toggle toggle={toggle} />
-          </StyledAccountDropdown>
+          <Suspense fallback={<Loading>ACCOUNT DROPDOWN LOADING</Loading>}>
+            <StyledAccountDropdown
+              className="accountDropdown"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={fadeIn}
+            >
+              <AnimatePresence>
+                {show && <Menu close={close} />}
+              </AnimatePresence>
+
+              <Toggle toggle={toggle} />
+            </StyledAccountDropdown>
+          </Suspense>
         )}
 
         {!isConnected && <Connect />}
