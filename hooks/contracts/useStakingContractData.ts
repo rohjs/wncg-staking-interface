@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAtomValue } from 'jotai'
 import type { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
@@ -26,6 +27,9 @@ const FNS = [
 const ABIS = findAbiFromStaking(...FNS)
 
 export function useStakingContractData() {
+  const queryClient = useQueryClient()
+  const isFetched = queryClient.getQueryData([`fetchedStakingData`]) ?? false
+
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
 
   const contracts = useMemo(
@@ -39,10 +43,10 @@ export function useStakingContractData() {
     [stakingAddress]
   )
 
-  const result = useContractReads({
+  useContractReads({
     contracts,
     staleTime: Infinity,
-    enabled: !!stakingAddress,
+    enabled: !isFetched,
     select(data: unknown = []) {
       const [
         earmarkIncentiveFee,
@@ -66,7 +70,7 @@ export function useStakingContractData() {
         BigNumber
       ]
 
-      return [
+      const result = [
         earmarkIncentiveFee?.toNumber() ?? 0,
         feeDenominator?.toNumber() ?? 0,
         balancerGauge ?? '',
@@ -77,6 +81,11 @@ export function useStakingContractData() {
         cooldownSeconds?.toNumber() ?? 0,
         unstakeWindow?.toNumber() ?? 0,
       ]
+
+      queryClient.setQueryData([`staking`], result)
+      queryClient.setQueryData([`fetchedStakingData`], true)
+
+      return result
     },
     onSuccess() {
       log(`staking`)
@@ -85,6 +94,4 @@ export function useStakingContractData() {
       log(`staking`, error)
     },
   }) as UseQueryResult<Array<string | number>, any>
-
-  return result
 }

@@ -16,9 +16,9 @@ import { WagmiConfig } from 'wagmi'
 import { configService } from 'services/config'
 import { DEFAULT_SEO } from 'lib/seo'
 import wagmiClient from 'lib/wagmi'
-import { useMediaQuery } from 'hooks'
 
 import GlobalStyle from 'styles/GlobalStyle'
+import Effects from 'components/Effects'
 import Layout from 'components/Layout'
 import Modals from 'components/Modals'
 
@@ -29,8 +29,6 @@ type AppProps = NextAppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  useMediaQuery()
-
   const queryClient = useRef(
     new QueryClient({
       defaultOptions: {
@@ -77,6 +75,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
               </Layout>
               <Modals />
+              <Effects />
             </WagmiConfig>
           </Provider>
         </Hydrate>

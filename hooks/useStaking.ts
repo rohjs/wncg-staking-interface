@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+
 import type { StakingContractData } from 'states/staking'
 import { associate } from 'utils/contract'
-import { useStakingContractData } from './contracts'
 
 const STAKING_DATA_PLACEHOLDER: StakingContractData = Object.freeze({
   earmarkIncentivePcnt: 0,
@@ -18,8 +19,9 @@ const STAKING_DATA_PLACEHOLDER: StakingContractData = Object.freeze({
 })
 
 export function useStaking() {
-  const { data, status } = useStakingContractData()
+  const queryClient = useQueryClient()
+  const data = queryClient.getQueryData<Array<string | number>>([`staking`])
   const stakingData = useMemo(() => associate(data ?? []), [data])
 
-  return { ...stakingData, status } ?? STAKING_DATA_PLACEHOLDER
+  return { ...stakingData } ?? STAKING_DATA_PLACEHOLDER
 }

@@ -37,9 +37,7 @@ const WncgStaking: NextPage = () => {
             <Form />
           </Suspense>
         </div>
-        <div className="right">
-          <Dashboard />
-        </div>
+        <div className="right">{/* <Dashboard /> */}</div>
       </StyledWncgStakingPage>
 
       <AnimatePresence>{showPoolPage && <Pool isModal />}</AnimatePresence>
