@@ -1,10 +1,8 @@
 import { useMemo } from 'react'
-import { useSetAtom } from 'jotai'
-import type { BigNumber } from 'ethers'
-import { formatUnits } from 'ethers/lib/utils'
+import { BigNumber } from 'ethers'
 import { useBalance, useContractReads } from 'wagmi'
+import type { UseQueryResult } from 'wagmi/dist/declarations/src/hooks/utils'
 
-import { etherBalanceAtom, tokenBalancesAtom } from 'states/user'
 import { configService } from 'services/config'
 import { uniqAddress } from 'utils/address'
 import { associateBalances } from 'utils/contract'
@@ -24,9 +22,6 @@ export function useBalances() {
   const { account } = useAccount()
   const { poolTokenAddresses } = usePool()
   const { rewardTokenAddress, stakedTokenAddress } = useStaking()
-
-  const setEtherBalance = useSetAtom(etherBalanceAtom)
-  const setTokenBalances = useSetAtom(tokenBalancesAtom)
 
   const addresses = useMemo(
     () =>
@@ -51,34 +46,34 @@ export function useBalances() {
     [account, addresses]
   )
 
-  useBalance({
+  const { data: ethBalance } = useBalance({
     addressOrName: account,
     enabled: !!account,
     watch: true,
     suspense: true,
-    onSuccess(data: unknown) {
+    onSuccess() {
       log(`ETH balances`)
-      setEtherBalance((data as FetchBalanceResult)?.formatted || '0')
     },
     onError(error) {
       log(`ETH balances`, error)
     },
   })
 
-  return useContractReads({
+  const { data: tokenBalances } = useContractReads({
     contracts,
     enabled: !!account,
     watch: true,
     suspense: true,
-    select(data: unknown = []) {
-      return (data as FetchBalanceResult[]).map((result) => {
-        return formatUnits(result.value?.toString() || '0', result.decimals)
-      })
-    },
-    onSuccess(data: unknown = []) {
+    onSuccess() {
       log(`balances`)
-      const balanceMap = associateBalances(data as BigNumber[], addresses)
-      setTokenBalances(balanceMap)
     },
-  })
+  }) as UseQueryResult<BigNumber[], any>
+
+  const balances = [
+    ...(tokenBalances ?? []),
+    ethBalance?.value ?? BigNumber.from(0),
+  ]
+  const tokenAddresses = [...addresses, configService.nativeAssetAddress]
+
+  return associateBalances(balances, tokenAddresses)
 }

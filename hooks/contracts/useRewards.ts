@@ -18,7 +18,7 @@ const ABIS = findAbiFromStaking(...FNS)
 const log = createLogger(`green`)
 
 export function useRewards() {
-  const { account } = useAccount()
+  const { account, isConnected } = useAccount()
   const { rewardTokenDecimals } = useStaking()
 
   const stakingAddress = useAtomValue(stakingContractAddressAtom)
@@ -45,8 +45,8 @@ export function useRewards() {
         formatUnits(amount?.toString() || '0', rewardTokenDecimals[i] || 18)
       )
     },
-    onSettled() {
-      log(`rewards`)
+    onSuccess() {
+      log(`rewards, ${account?.slice(0, 6)} / ${isConnected}`)
     },
     onError(error) {
       log(`rewards`, error)

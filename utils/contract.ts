@@ -37,7 +37,8 @@ export function associateBalances(
 ): BalanceMap {
   const entries = balances.map((balance, i) => {
     const address = addresses[i].toLowerCase()
-    return [address, balance]
+    const { decimals } = getTokenInfo(address)
+    return [address, formatUnits(balance, decimals)]
   })
 
   return Object.fromEntries(entries)
@@ -99,7 +100,7 @@ export function associateStakingContractData(data?: unknown[]) {
 
   const withdrawWindowPeriod = unstakeWindow?.toNumber() ?? 0
 
-  const result = {
+  return {
     earmarkIncentivePcnt,
     emissions,
     liquidityGaugeAddress,
@@ -111,8 +112,6 @@ export function associateStakingContractData(data?: unknown[]) {
     cooldownWindowPeriod,
     withdrawWindowPeriod,
   }
-
-  return result
 }
 
 export function associate(data: any[]) {

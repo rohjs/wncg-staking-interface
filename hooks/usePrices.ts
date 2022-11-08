@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { TOKEN_PRICES_PLACEHOLDERS } from 'constants/tokens'
 import { fetchTokenPrices } from 'lib/coingecko'
+import { fetchCoinmarketCapTokenPrice } from 'lib/coinmarketCap'
 import { uniqAddress } from 'utils/address'
 import { calcPoolTotalValue } from 'utils/calculator'
 import { bnum } from 'utils/num'
@@ -49,6 +50,8 @@ export function usePrices() {
       },
     }
   )
+
+  console.log(33, 'TOKEN PRICE STATUS', tokenPrices.status)
 
   const bptPrice = useMemo(() => {
     if (!tokenPrices.data) return '0'

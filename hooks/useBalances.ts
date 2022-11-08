@@ -1,14 +1,12 @@
 import { useCallback, useMemo } from 'react'
-import { useAtomValue } from 'jotai'
 
-import { balancesAtom } from 'states/user'
 import { bnum } from 'utils/num'
+import { useBalances as useFetchBalances } from './contracts'
 import { useStaking } from './useStaking'
 
 export function useBalances() {
+  const balanceMap = useFetchBalances()
   const { stakedTokenAddress } = useStaking()
-
-  const balanceMap = useAtomValue(balancesAtom)
 
   const balanceFor = useCallback(
     (address?: string) => {

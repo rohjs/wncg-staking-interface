@@ -1,7 +1,6 @@
 export { useAccount } from './useAccount'
 export { useAllowances } from './useAllowances'
 export { useApprove } from './useApprove'
-export { useApr } from './useApr'
 export { useBalances } from './useBalances'
 export { useCalculator } from './useCalculator'
 export { useConnectWallets } from './useConnectWallets'

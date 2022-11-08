@@ -36,13 +36,13 @@ export function useStakedBalances() {
     enabled: !!account,
     watch: true,
     suspense: true,
-    onSettled() {
-      log(`staked balances`)
-    },
     select(data: unknown = []) {
       return (data as BigNumber[]).map((amount) =>
         formatUnits(amount?.toString() ?? '0')
       )
+    },
+    onSettled() {
+      log(`staked balances`)
     },
     onError(error) {
       log(`staked balances`, error)

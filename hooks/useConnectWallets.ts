@@ -4,17 +4,14 @@ import { useDisconnect } from 'wagmi'
 import { ModalCategory } from 'states/ui'
 import { useModal } from './useModal'
 import { useSettings } from './useSettings'
-import { useTx } from './useTx'
 
 export function useConnectWallets() {
   const { addModal } = useModal()
   const { resetSettings } = useSettings()
-  const { resetTx } = useTx()
 
   const { disconnect: initDisconnect } = useDisconnect({
     onSuccess() {
       resetSettings()
-      resetTx?.()
     },
   })
 

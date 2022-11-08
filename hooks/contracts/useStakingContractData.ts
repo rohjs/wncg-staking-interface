@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
 import type { BigNumber } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
 import { useContractReads } from 'wagmi'
 import type { UseQueryResult } from 'wagmi/dist/declarations/src/hooks/utils'
 
@@ -8,7 +9,6 @@ import { stakingContractAddressAtom } from 'states/staking'
 import { createLogger } from 'utils/log'
 import { networkChainId } from 'utils/network'
 import { findAbiFromStaking } from 'utils/wagmi'
-import { formatUnits } from 'ethers/lib/utils'
 
 const log = createLogger(`orange`)
 
@@ -39,11 +39,10 @@ export function useStakingContractData() {
     [stakingAddress]
   )
 
-  return useContractReads({
+  const result = useContractReads({
     contracts,
-    cacheTime: Infinity,
+    staleTime: Infinity,
     enabled: !!stakingAddress,
-    suspense: true,
     select(data: unknown = []) {
       const [
         earmarkIncentiveFee,
@@ -86,4 +85,6 @@ export function useStakingContractData() {
       log(`staking`, error)
     },
   }) as UseQueryResult<Array<string | number>, any>
+
+  return result
 }

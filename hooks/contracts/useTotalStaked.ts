@@ -24,11 +24,11 @@ export function useTotalStaked() {
     chainId: networkChainId,
     watch: true,
     suspense: true,
+    select(data: unknown) {
+      return formatUnits((data as BigNumber)?.toString() ?? 0)
+    },
     onSettled() {
       log(`total staked`)
-    },
-    select(data: unknown) {
-      return formatUnits((data as BigNumber)?.toString() || 0)
     },
     onError(error) {
       log(`total staked`, error)

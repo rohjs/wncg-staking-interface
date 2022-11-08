@@ -4,13 +4,11 @@ import { parseUnits } from 'ethers/lib/utils'
 import { configService } from 'services/config'
 import { useRewards as useFetchRewards } from './contracts/useRewards'
 import { useFiatCurrency } from './useFiatCurrency'
-import { usePrices } from './usePrices'
 import { useStaking } from './useStaking'
 
 export function useRewards() {
   const { data: rewards = [] } = useFetchRewards()
   const { toFiat } = useFiatCurrency()
-  const { priceFor } = usePrices()
   const {
     rewardTokenAddress,
     rewardTokensList,
@@ -27,11 +25,6 @@ export function useRewards() {
   const rewardsInFiatValue = useMemo(
     () => rewards.map((reward, i) => toFiat(rewardTokensList[i], reward)),
     [rewardTokensList, rewards, toFiat]
-  )
-
-  const rewardTokenPrices = useMemo(
-    () => rewardTokensList.map((address) => priceFor(address)),
-    [priceFor, rewardTokensList]
   )
 
   const rewardTokenIndex = useMemo(
@@ -51,7 +44,6 @@ export function useRewards() {
     rewardTokenAddress,
     rewardTokenIndex,
     rewardTokensList,
-    rewardTokenPrices,
     rewardTokenSymbols,
     scaledRewards,
   }
