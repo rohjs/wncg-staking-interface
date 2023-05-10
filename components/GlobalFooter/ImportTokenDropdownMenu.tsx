@@ -7,6 +7,7 @@ import { useAuth, useCloseOnBlur, useImportToken, useStaking } from 'hooks'
 
 import { StyledGlobalFooterImportTokenDropdownMenu } from './styled'
 import TokenIcon from 'components/TokenIcon'
+import Icon from 'components/Icon'
 
 type GlobalFooterImportTokenDropdownProps = {
   closeDropdown(): void
@@ -49,6 +50,13 @@ export default function GlobalFooterImportTokenDropdownMenu({
       className="tokenMenu"
       variants={slideInUp}
     >
+      <header className="dropdownHeader">
+        <h4 className="title">Import token</h4>
+        <button className="closeButton" type="button" onClick={closeDropdown}>
+          <Icon icon="close" $size={24} />
+        </button>
+      </header>
+
       {list.map((addr) => {
         const { symbol } = tokenMap[addr]
 

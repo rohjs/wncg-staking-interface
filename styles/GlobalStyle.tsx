@@ -268,6 +268,24 @@ const GlobalStyle = createGlobalStyle`
     )}
   }
 
+  .handheldOnly {
+    ${media(
+      'minLaptop',
+      css`
+        display: none !important;
+      `
+    )}
+  }
+
+  .browserOnly {
+    ${media(
+      'maxLaptop',
+      css`
+        display: none !important;
+      `
+    )}
+  }
+
 `
 
 export default GlobalStyle

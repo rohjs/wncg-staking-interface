@@ -22,6 +22,7 @@ type ExitModalPage1Step2SingleExitProps = {
   singleExitMaxAmounts: string[]
   singleExitTokenOutIndex?: number
   watch: UseFormWatch<ExitFormFields>
+  isNativeCurrency: boolean
   hash?: Hash
 }
 
@@ -31,6 +32,7 @@ function ExitModalPage1Step2SingleExit({
   setMaxValue,
   singleExitMaxAmounts,
   singleExitTokenOutIndex = 0,
+  isNativeCurrency,
   watch,
   hash,
 }: ExitModalPage1Step2SingleExitProps) {
@@ -84,6 +86,8 @@ function ExitModalPage1Step2SingleExit({
       <header className="header">
         <span className="count">2</span>
         <h4 className="title">How much do you want to exit?</h4>
+        {singleExitTokenOutIndex}
+        {exitType}
       </header>
 
       <Control<'number'>
