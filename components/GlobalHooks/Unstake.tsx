@@ -4,13 +4,13 @@ import { useBlockNumber } from 'wagmi'
 
 import { unstakeTimestampsAtom } from 'states/account'
 import { currentTimestampAtom } from 'states/system'
-import config from 'config'
 import { now } from 'utils/now'
 import { bnum } from 'utils/bnum'
-import { useAuth } from 'hooks'
+import { useAuth, useChain } from 'hooks'
 
 function UnstakeHook() {
   const { account } = useAuth()
+  const config = useChain()
 
   const [currentTimestamp, setCurrentTimestamp] = useAtom(currentTimestampAtom)
   const { cooldowns = 0 } = useAtomValue(unstakeTimestampsAtom) ?? {}

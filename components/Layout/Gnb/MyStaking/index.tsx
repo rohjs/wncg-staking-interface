@@ -5,8 +5,7 @@ import clsx from 'clsx'
 
 import { cooldownWindowAtom, withdrawWindowAtom } from 'states/account'
 import { showMyStakingAtom } from 'states/ui'
-import { EXIT_MOTION } from 'config/motions'
-import { fadeIn, popIn } from 'config/motionVariants'
+import { ANIMATION_MAP, EXIT_MOTION } from 'config/constants/motions'
 import { bnum } from 'utils/bnum'
 import { useFiat, useIsMounted, useStaking } from 'hooks'
 import { useFetchUserData } from 'hooks/queries'
@@ -23,13 +22,14 @@ export default function GnbMyStaking() {
 
   const toFiat = useFiat()
   const isMounted = useIsMounted()
-  const { stakedTokenAddress } = useStaking()
+  const { lpToken } = useStaking()
 
   const { stakedTokenBalance = '0' } =
     useFetchUserData({ enabled: isMounted }).data ?? {}
+
   const stakedTokenBalanceInFiatValue = toFiat(
     stakedTokenBalance,
-    stakedTokenAddress
+    lpToken.address
   )
 
   const cooldownWindow = useAtomValue(cooldownWindowAtom)
@@ -54,7 +54,7 @@ export default function GnbMyStaking() {
         className={clsx('stakingButton', { tooltipGroup: unstakeWindow })}
         type="button"
         onClick={toggle}
-        variants={fadeIn}
+        variants={ANIMATION_MAP.fadeIn}
       >
         <Icon icon="coin" $size={24} />
         My LP
@@ -69,7 +69,7 @@ export default function GnbMyStaking() {
             <motion.div
               {...EXIT_MOTION}
               className="cooldownBadge"
-              variants={popIn}
+              variants={ANIMATION_MAP.popIn}
               transition={{ duration: 0.05, type: 'spring' }}
             >
               <Lottie animationData="timer" />
@@ -81,7 +81,7 @@ export default function GnbMyStaking() {
             <motion.div
               {...EXIT_MOTION}
               className="unstakeBadge"
-              variants={fadeIn}
+              variants={ANIMATION_MAP.fadeIn}
               role="presentation"
             />
           )}

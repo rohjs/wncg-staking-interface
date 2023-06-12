@@ -30,21 +30,20 @@ export default function StakeFormRevenuePopup({
   className,
 }: StakeFormRevenueProps) {
   const toFiat = useFiat()
-  const { rewardEmissions, rewardTokenAddresses, stakedTokenAddress } =
-    useStaking()
+  const { rewardEmissionsPerSec, rewardTokenAddresses, lpToken } = useStaking()
 
   const priceMap = useAtomValue(priceMapAtom)
-  const stakedTokenPrice = priceMap[stakedTokenAddress] ?? '0'
+  const stakedTokenPrice = priceMap[lpToken.address] ?? '0'
   const { totalStaked = '0' } = useFetchStaking().data ?? {}
 
   const expectedTotalStakedValue = toFiat(
     bnum(totalStaked).plus(bnum(amount).toString()).toString(),
-    stakedTokenAddress
+    lpToken.address
   )
 
   const aprs = useMemo(
     () =>
-      rewardEmissions.map(
+      rewardEmissionsPerSec.map(
         (e, i) =>
           calcApr(
             e,
@@ -52,7 +51,12 @@ export default function StakeFormRevenuePopup({
             expectedTotalStakedValue
           ) ?? 0
       ),
-    [expectedTotalStakedValue, priceMap, rewardEmissions, rewardTokenAddresses]
+    [
+      expectedTotalStakedValue,
+      priceMap,
+      rewardEmissionsPerSec,
+      rewardTokenAddresses,
+    ]
   )
 
   const revenueMapList = useMemo(() => {

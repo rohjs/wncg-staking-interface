@@ -4,7 +4,7 @@ import { useSetAtom } from 'jotai'
 import { RESET } from 'jotai/utils'
 
 import { exitTxAtom } from 'states/tx'
-import config from 'config'
+import { NATIVE_CURRENCY_ADDRESS } from 'config/constants/addresses'
 import { formatUnits } from 'utils/formatUnits'
 import { txUrlFor } from 'utils/txUrlFor'
 import { useFiat, useStaking } from 'hooks'
@@ -29,18 +29,16 @@ export default function ExitToast({
   tokenOutIndex,
 }: ExitToast) {
   const toFiat = useFiat()
-  const { bptName, stakedTokenAddress, tokenMap } = useStaking()
-  const { decimals: stakedTokenDecimals = 18 } =
-    tokenMap[stakedTokenAddress] ?? {}
+  const { lpToken, tokens } = useStaking()
 
   const setTx = useSetAtom(exitTxAtom)
 
   const status = useWatch(hash)
 
   const importTokenAddress = isProportional
-    ? stakedTokenAddress
-    : tokenMap[assets[tokenOutIndex]].address !== config.nativeCurrency.address
-    ? tokenMap[assets[tokenOutIndex]].address
+    ? lpToken.address
+    : tokens[assets[tokenOutIndex]].address !== NATIVE_CURRENCY_ADDRESS
+    ? tokens[assets[tokenOutIndex]].address
     : null
 
   useMount(() => setTx(RESET))
@@ -63,13 +61,13 @@ export default function ExitToast({
             <div className="detailItem">
               <dt>
                 <div className="token">
-                  <TokenIcon address={stakedTokenAddress} $size={20} />
+                  <TokenIcon address={lpToken.address} $size={20} />
                 </div>
-                {bptName}
+                {lpToken.name}
               </dt>
 
               <dd>
-                <NumberFormat value={formatUnits(bptIn, stakedTokenDecimals)} />
+                <NumberFormat value={formatUnits(bptIn, lpToken.decimals)} />
                 <NumberFormat
                   className="usd"
                   value={totalExitFiatValue}
@@ -83,7 +81,7 @@ export default function ExitToast({
               if (i !== tokenOutIndex) return null
 
               const addr = assets[i]
-              const { symbol = '' } = tokenMap[addr] ?? {}
+              const symbol = tokens[addr]?.symbol ?? ''
               const fiatValue = toFiat(amt, addr)
 
               return (

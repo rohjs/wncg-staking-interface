@@ -10,10 +10,14 @@ import { StyledGnb } from './styled'
 import Image from 'components/Image'
 import Suspense from 'components/Suspense'
 import AccountMenu from './AccountMenu'
-import ConnectButton from './ConnectButton'
+
 import MenuButton from './MenuButton'
 import MenuList from './MenuList'
 import Sidebar from './Sidebar'
+
+const ConnectButton = dynamic(() => import('./ConnectButton'), {
+  ssr: false,
+})
 
 const ClaimableRewards = dynamic(() => import('./ClaimableRewards'), {
   ssr: false,

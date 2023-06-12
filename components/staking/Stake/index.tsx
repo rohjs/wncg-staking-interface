@@ -1,10 +1,8 @@
 import { memo } from 'react'
 import { motion } from 'framer-motion'
 
-import { MOTION } from 'config/motions'
-import { fadeIn } from 'config/motionVariants'
+import { ANIMATION_MAP, MOTION } from 'config/constants/motions'
 import { useFetchUserBalances } from 'hooks/queries'
-
 import { useAuth } from 'hooks'
 
 import { StyledStakingStake } from './styled'
@@ -28,7 +26,11 @@ function StakingStake() {
       {isFetching && <Fallback />}
 
       {!isFetching && (
-        <motion.div {...MOTION} className="stakeGroup" variants={fadeIn}>
+        <motion.div
+          {...MOTION}
+          className="stakeGroup"
+          variants={ANIMATION_MAP.fadeIn}
+        >
           {isConnected === true && (
             <Suspense>
               <Form />
@@ -37,9 +39,7 @@ function StakingStake() {
 
           {isConnected === false && <Connect />}
 
-          <Suspense>
-            <JoinButton />
-          </Suspense>
+          <JoinButton />
         </motion.div>
       )}
     </StyledStakingStake>

@@ -6,10 +6,9 @@ import { useSetAtom } from 'jotai'
 import { RESET } from 'jotai/utils'
 
 import { approveTxAtom } from 'states/tx'
-import config from 'config'
 import { parseLog } from 'utils/parseLog'
 import { txUrlFor } from 'utils/txUrlFor'
-import { useStaking } from 'hooks'
+import { useChain, useStaking } from 'hooks'
 import { useWatch } from './useWatch'
 
 import { StyledToast } from './styled'
@@ -28,12 +27,13 @@ export default function ApproveToast({
   hash,
   toastLabel,
   tokenAddress,
-  tokenDecimals,
 }: ApproveToastProps) {
   const [pending, setPending] = useState<boolean | null>(null)
 
+  const { chainId } = useChain()
+  const { tokens } = useStaking()
+
   const setTx = useSetAtom(approveTxAtom)
-  const { tokenMap } = useStaking()
 
   const status = useWatch(hash)
 
@@ -41,7 +41,7 @@ export default function ApproveToast({
 
   useTransaction({
     hash,
-    chainId: config.chainId,
+    chainId,
     enabled: !!hash,
     suspense: false,
     async onSuccess(tx) {
@@ -60,7 +60,7 @@ export default function ApproveToast({
     },
   })
 
-  const { symbol = '' } = tokenMap[tokenAddress] ?? {}
+  const symbol = tokens[tokenAddress]?.symbol ?? ''
 
   return (
     <StyledToast>
@@ -79,7 +79,7 @@ export default function ApproveToast({
           <div className="detailItem">
             <dt>
               <div className="token">
-                <TokenIcon address={tokenAddress} dark $size={20} />
+                <TokenIcon address={tokenAddress} $dark $size={20} />
               </div>
               {symbol}
             </dt>

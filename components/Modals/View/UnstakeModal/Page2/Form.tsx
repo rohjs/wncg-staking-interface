@@ -23,11 +23,10 @@ export default function UnstakeModalPage2Form({
   ...props
 }: UnstakeModalPage2FormProps) {
   const toFiat = useFiat()
-  const { stakedTokenAddress, tokenMap } = useStaking()
+  const { lpToken, tokens } = useStaking()
   const hasRewards = bnum(totalClaimFiatValue).gt(0)
 
-  const { decimals: stakedTokenDecimals = 18 } =
-    tokenMap[stakedTokenAddress] ?? {}
+  const decimals = tokens[lpToken.address]?.decimals ?? 18
 
   const {
     checked,
@@ -39,7 +38,7 @@ export default function UnstakeModalPage2Form({
     placeholder,
     toggleCheck,
   } = props
-  const maxBalanceInFiatValue = toFiat(maxBalance, stakedTokenAddress)
+  const maxBalanceInFiatValue = toFiat(maxBalance, lpToken.address)
 
   const disabled = _disabled || !hasRewards
 
@@ -49,10 +48,10 @@ export default function UnstakeModalPage2Form({
         id="unstakeAmount"
         control={control as unknown as ReactHookFormControl<FieldValues, 'any'>}
         name="unstakeAmount"
-        address={stakedTokenAddress}
+        address={lpToken.address}
         rules={rules}
         maxAmount={maxBalance}
-        decimals={stakedTokenDecimals}
+        decimals={decimals}
         setMaxValue={setMaxValue}
         showFiatValue
         disabled={inputDisabled || disabled}

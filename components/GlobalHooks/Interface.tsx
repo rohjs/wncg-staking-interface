@@ -4,12 +4,14 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useSetAtom } from 'jotai'
 
 import { currentTimestampAtom, priceMapAtom } from 'states/system'
-import { queryKeys } from 'config/queryKeys'
+import { QUERY_KEYS } from 'config/constants/queryKeys'
 import { now } from 'utils/now'
 import { useFetchPrices } from 'hooks/queries'
+import { useChain } from 'hooks'
 
 function InterfaceHook() {
   const queryClient = useQueryClient()
+  const { chainId } = useChain()
 
   const setCurrentTimestamp = useSetAtom(currentTimestampAtom)
   const setPriceMap = useSetAtom(priceMapAtom)
@@ -25,10 +27,10 @@ function InterfaceHook() {
   })
 
   useMount(() => {
-    const defaultPriceMap = (queryClient.getQueryData(
-      [queryKeys.FallbackPrices],
-      { exact: false }
-    ) ?? {}) as PriceMap
+    const defaultPriceMap = queryClient.getQueryData([
+      QUERY_KEYS.FallbackPrices,
+      chainId,
+    ]) as PriceMap
 
     setPriceMap(defaultPriceMap)
   })

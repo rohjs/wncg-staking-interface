@@ -23,21 +23,21 @@ type CooldownToastProps = {
 }
 
 export default function CooldownToast({ hash }: CooldownToastProps) {
-  const { cooldownPeriod, unstakePeriod } = useStaking()
+  const { cooldownSeconds, withdrawSeconds } = useStaking()
   const [currentTimestamp, setCurrentTimestamp] = useAtom(currentTimestampAtom)
 
   const schedule = useMemo(() => {
     const cooldownEndsAt = bnum(currentTimestamp)
-      .plus(cooldownPeriod)
+      .plus(cooldownSeconds)
       .toNumber()
 
     return {
       cooldownStartsAt: currentTimestamp,
       cooldownEndsAt,
       unstakeStartsAt: cooldownEndsAt,
-      unstakeEndsAt: bnum(cooldownEndsAt).plus(unstakePeriod).toNumber(),
+      unstakeEndsAt: bnum(cooldownEndsAt).plus(withdrawSeconds).toNumber(),
     }
-  }, [cooldownPeriod, currentTimestamp, unstakePeriod])
+  }, [cooldownSeconds, currentTimestamp, withdrawSeconds])
 
   const setTx = useSetAtom(cooldownTxAtom)
 

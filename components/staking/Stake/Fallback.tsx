@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 
-import { MOTION } from 'config/motions'
-import { fadeIn } from 'config/motionVariants'
+import { ANIMATION_MAP, MOTION } from 'config/constants/motions'
 import { useResponsive } from 'hooks'
 
 import { StyledStakeFallback } from './styled'
@@ -15,7 +14,7 @@ export default function StakingStakeFallback() {
       <motion.div
         className="stakeGroup"
         {...MOTION}
-        variants={fadeIn}
+        variants={ANIMATION_MAP.fadeIn}
         style={{ width: '100%' }}
       >
         <Skeleton $width="100%" $height={64} />
@@ -30,7 +29,7 @@ export default function StakingStakeFallback() {
     <StyledStakeFallback
       {...MOTION}
       className="stakeGroup"
-      variants={fadeIn}
+      variants={ANIMATION_MAP.fadeIn}
       style={{ width: '100%' }}
     >
       <div className="group">

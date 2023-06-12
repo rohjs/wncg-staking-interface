@@ -1,5 +1,7 @@
 import config from 'config'
-import { useStaking } from 'hooks'
+import { STAKING_ADDRESS, WNCG_ADDRESS } from 'config/constants/addresses'
+import { ChainId } from 'config/chains'
+import { useChain } from 'hooks'
 
 import { StyledMainCard } from './styled'
 import Button from 'components/Button'
@@ -8,7 +10,8 @@ import Image from 'components/Image'
 import TokenIcon from 'components/TokenIcon'
 
 export default function MainWncgCard() {
-  const { rewardTokenAddress } = useStaking()
+  const { chainId } = useChain()
+  const rewardTokenAddress = WNCG_ADDRESS[chainId]
 
   return (
     <StyledMainCard>
@@ -48,7 +51,10 @@ export default function MainWncgCard() {
 
           <div className="rewardItem">
             <dt>
-              <TokenIcon address={config.bal} $size={16} />
+              <TokenIcon
+                address={STAKING_ADDRESS[ChainId.ETHEREUM]}
+                $size={16}
+              />
               <strong>BAL</strong>
             </dt>
             <dd>Balancer Governance Token</dd>

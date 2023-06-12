@@ -59,9 +59,11 @@ function Layout({ children }: PropsWithChildren) {
         <StyledMain ref={mainRef} layout>
           {children}
         </StyledMain>
-
-        <GlobalHooks />
       </StyledLayout>
+
+      {/* <Suspense>
+        <GlobalHooks />
+      </Suspense> */}
 
       {!isRootPage && (
         <>

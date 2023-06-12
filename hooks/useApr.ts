@@ -9,14 +9,19 @@ import { useFetchStaking } from './queries'
 export function useApr() {
   const toFiat = useFiat()
   const priceMap = useAtomValue(priceMapAtom)
-  const { bptAddress, rewardEmissions, rewardTokenAddresses } = useStaking()
+  const {
+    lpToken,
+    rewardEmissionsPerSec,
+    rewardTokenAddresses,
+    totalStaked: _initTotalStaked,
+  } = useStaking()
 
-  const { totalStaked = '0' } = useFetchStaking().data ?? {}
+  const { totalStaked = _initTotalStaked } = useFetchStaking().data ?? {}
 
-  const totalStakedValue = toFiat(totalStaked, bptAddress)
+  const totalStakedValue = toFiat(totalStaked, lpToken.address)
 
-  const aprs = rewardEmissions.map((e, i) =>
-    calcApr(e, priceMap[rewardTokenAddresses[i]] ?? '0', totalStakedValue)
+  const aprs = rewardEmissionsPerSec.map((e, i) =>
+    calcApr(e, toFiat(1, rewardTokenAddresses[i]) ?? '0', totalStakedValue)
   )
 
   return aprs

@@ -3,9 +3,14 @@ import { useAtomValue } from 'jotai'
 
 import { priceMapAtom } from 'states/system'
 import { bnum } from 'utils/bnum'
+import { useQueryClient } from '@tanstack/react-query'
+import { QUERY_KEYS } from 'config/constants/queryKeys'
 
 export function useFiat() {
-  const priceMap = useAtomValue(priceMapAtom)
+  const queryClient = useQueryClient()
+  const priceMap =
+    useAtomValue(priceMapAtom) ??
+    queryClient.getQueryData([QUERY_KEYS.Prices], { exact: false })
 
   const toFiat = useCallback(
     (amount: string | number, tokenAddress: string) => {

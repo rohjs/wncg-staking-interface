@@ -22,7 +22,7 @@ type JoinToastProps = {
 
 export default function JoinToast({ hash, joinAmounts }: JoinToastProps) {
   const toFiat = useFiat()
-  const { poolTokens, stakedTokenAddress } = useStaking()
+  const { lpToken, poolTokens } = useStaking()
 
   const setTx = useSetAtom(joinTxAtom)
 
@@ -73,11 +73,7 @@ export default function JoinToast({ hash, joinAmounts }: JoinToastProps) {
       </div>
 
       <footer className="toastFooter">
-        <ImportToken
-          address={stakedTokenAddress}
-          $size="sm"
-          $variant="primary"
-        />
+        <ImportToken address={lpToken.address} $size="sm" $variant="primary" />
       </footer>
     </StyledToast>
   )

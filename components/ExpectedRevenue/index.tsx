@@ -27,21 +27,20 @@ type ExpectedRevenueProps = {
 function ExpectedRevenue({ amount = '0' }: ExpectedRevenueProps) {
   const toFiat = useFiat()
   const { isMobile } = useResponsive()
-  const { rewardEmissions, rewardTokenAddresses, stakedTokenAddress } =
-    useStaking()
+  const { lpToken, rewardEmissionsPerSec, rewardTokenAddresses } = useStaking()
 
   const { totalStaked = '0' } = useFetchStaking().data ?? {}
   const { stakedTokenBalance = '0' } = useFetchUserData().data ?? {}
 
   const priceMap = useAtomValue(priceMapAtom)
-  const stakedTokenPrice = priceMap[stakedTokenAddress] ?? '0'
+  const stakedTokenPrice = priceMap[lpToken.address] ?? '0'
 
   const expectedTotalStakedValue = toFiat(
     bnum(totalStaked).plus(amount).toString(),
-    stakedTokenAddress
+    lpToken.address
   )
 
-  const aprs = rewardEmissions.map(
+  const aprs = rewardEmissionsPerSec.map(
     (e, i) =>
       calcApr(e, priceMap[rewardTokenAddresses[i]], expectedTotalStakedValue) ??
       0

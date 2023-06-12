@@ -2,43 +2,44 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSetAtom } from 'jotai'
 
 import { priceMapAtom } from 'states/system'
-import config from 'config'
-import { queryKeys } from 'config/queryKeys'
-import { MINUTE_MS } from 'config/misc'
+import { QUERY_KEYS } from 'config/constants/queryKeys'
+import { MINUTE_MS } from 'config/constants/time'
 import { fetchPrices } from 'lib/queries/fetchPrices'
-import { bnum } from 'utils/bnum'
-import { calcTotalPoolValue } from 'utils/calcTotalPoolValue'
-import { useStaking } from 'hooks/useStaking'
+import { calcLpTokenPrice } from 'utils/calcLpTokenPrice'
+import { useChain, useStaking } from 'hooks'
+import { useFetchPool } from './useFetchPool'
 
 export function useFetchPrices(options: UseFetchOptions = {}) {
   const {
     enabled = true,
     refetchInterval = 10 * MINUTE_MS,
-    refetchOnWindowFocus = 'always',
+    refetchOnWindowFocus,
     suspense = true,
   } = options
+
   const queryClient = useQueryClient()
+  const { chainId } = useChain()
   const {
-    bptAddress,
-    bptTotalSupply,
-    poolTokens,
+    lpToken: initLpToken,
     rewardTokenAddresses,
     poolTokenAddresses,
   } = useStaking()
 
+  const { lpToken = initLpToken, poolTokens = [] } = useFetchPool().data ?? {}
+
   const setPriceMap = useSetAtom(priceMapAtom)
 
   const initialData = queryClient.getQueryData<PriceMap>(
-    [queryKeys.FallbackPrices],
+    [QUERY_KEYS.FallbackPrices, chainId],
     {
       exact: false,
     }
   )
 
   return useQuery<PriceMap>(
-    [queryKeys.Staking.Prices, config.weth],
+    [QUERY_KEYS.Staking.Prices, chainId],
     () =>
-      fetchPrices(config.weth, ...poolTokenAddresses, ...rewardTokenAddresses),
+      fetchPrices(chainId, [...poolTokenAddresses, ...rewardTokenAddresses]),
     {
       enabled,
       staleTime: Infinity,
@@ -49,27 +50,22 @@ export function useFetchPrices(options: UseFetchOptions = {}) {
       initialData,
       suspense,
       onSuccess(data) {
-        if (!data) return
+        const lpTokenPrice = calcLpTokenPrice(
+          chainId,
+          poolTokens,
+          lpToken.address,
+          lpToken.totalSupply,
+          data
+        )
 
-        let bptPrice: string
-        try {
-          bptPrice =
-            bnum(calcTotalPoolValue(poolTokens, data))
-              .div(bptTotalSupply)
-              .toString() ?? '0'
-        } catch {
-          bptPrice = '0'
-        }
-
-        setPriceMap((prev) => ({ ...prev, ...data, [bptAddress]: bptPrice }))
+        setPriceMap((prev) => ({
+          ...prev,
+          ...data,
+          ...lpTokenPrice,
+        }))
       },
       onError() {
-        const state =
-          queryClient.getQueryData<PriceMap>([queryKeys.FallbackPrices], {
-            exact: false,
-          }) ?? {}
-
-        setPriceMap((prev) => ({ ...prev, ...state }))
+        setPriceMap((prev) => ({ ...prev, ...initialData }))
       },
     }
   )

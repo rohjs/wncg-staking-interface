@@ -22,9 +22,9 @@ import wagmiClient from 'lib/wagmi/client'
 import GlobalStyle from 'styles/GlobalStyle'
 import ToastStyle from 'styles/ToastStyle'
 
-import Effects from 'components/GlobalHooks'
 import Layout from 'components/Layout'
 import ToastContainer from 'components/ToastContainer'
+import GlobalHooks from 'components/GlobalHooks'
 
 type MyAppProps = AppProps & {
   pageProps: {
@@ -46,6 +46,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
     new QueryClient({
       defaultOptions: {
         queries: {
+          staleTime: Infinity,
           cacheTime: Infinity,
           suspense: true,
           keepPreviousData: true,
@@ -57,7 +58,6 @@ function MyApp({ Component, pageProps }: MyAppProps) {
       },
     })
   )
-  const isProd = config.env === 'production'
 
   useMount(() => {
     if (isFirefox) return document.body.classList.add('firefox')
@@ -68,7 +68,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 
   return (
     <>
-      {isProd && config.googleTagManager && (
+      {config.env === 'production' && config.googleTagManager && (
         <Script
           id="gtm"
           strategy="afterInteractive"
@@ -91,7 +91,9 @@ function MyApp({ Component, pageProps }: MyAppProps) {
                 </Layout>
 
                 <ToastContainer />
-                <Effects />
+
+                <GlobalHooks />
+
                 <ReactQueryDevtools />
               </WagmiConfig>
             </HydrateAtoms>

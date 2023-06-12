@@ -1,62 +1,72 @@
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/router'
 
-import config from 'config'
-import { queryKeys } from 'config/queryKeys'
+import { QUERY_KEYS } from 'config/constants/queryKeys'
+import { TOKENS } from 'config/constants/tokens'
+import {
+  LIQUIDITY_POOL_PLACEHOLDER,
+  STAKING_PLACEHOLDER,
+} from 'config/constants/placeholders'
+import { useChain } from './useChain'
+import { build } from 'lib/queries/build'
+import { useSetAtom } from 'jotai'
+import { priceMapAtom } from 'states/system'
 
-export function useStaking() {
+type UseStakingReturnEthereum = LiquidityPool &
+  EthereumStaking & {
+    tokens: TokenMap
+    priceMap: PriceMap
+  }
+
+type UseStakingReturnBsc = LiquidityPool &
+  Staking & {
+    tokens: TokenMap
+    priceMap: PriceMap
+  }
+
+type UseStakingReturn<T extends 'ethereum' | undefined> = T extends undefined
+  ? UseStakingReturnBsc
+  : UseStakingReturnEthereum
+
+export function useStaking<T extends 'ethereum' | undefined>() {
   const queryClient = useQueryClient()
+  const { chainId } = useChain()
 
-  const data =
-    queryClient.getQueryData<BuildResponse>([queryKeys.Build], {
-      exact: false,
-    }) ??
-    ({
-      tokenMap: {},
-      pool: {
-        id: config.poolId,
-        address: '' as Hash,
-        createTime: 0,
-        factory: '',
-        symbol: '',
-        name: '',
-        swapFee: '',
-        owner: '',
-        totalLiquidity: '',
-        totalShares: '',
-        totalSwapFee: '',
-        totalSwapVolume: '',
-        tokens: [],
-        tokensList: [],
+  const initialData = (queryClient.getQueryData([
+    QUERY_KEYS.Build,
+    chainId,
+  ]) ?? {
+    pool: LIQUIDITY_POOL_PLACEHOLDER,
+    staking: STAKING_PLACEHOLDER[chainId],
+    tokens: TOKENS[chainId],
+    priceMap: {},
+  }) satisfies {
+    pool: LiquidityPool
+    staking: Staking | EthereumStaking
+    tokens: TokenMap
+    priceMap: PriceMap
+  }
+
+  const setPriceMap = useSetAtom(priceMapAtom)
+
+  const { data = initialData } = useQuery(
+    [QUERY_KEYS.Build, chainId],
+    () => build(chainId),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      initialData,
+      onSuccess(data) {
+        const { priceMap = {} } = data ?? {}
+        setPriceMap(priceMap)
       },
-      balRewardPoolAddress: '' as Hash,
-      bptAddress: '' as Hash,
-      bptTotalSupply: '',
-      bptSymbol: '',
-      bptName: '',
-      bptDecimals: 18,
-      poolId: config.poolId,
-      poolSwapFee: '',
-      poolTotalLiquidity: '',
-      poolTotalSwapVolume: '',
-      poolTotalSwapFee: '',
-      poolTokens: [],
-      poolTokenAddresses: [],
-      poolTokenBalances: [],
-      poolTokenDecimals: [],
-      poolTokenWeights: [],
-      poolTokenWeightsInPcnt: [],
-      poolTokenSymbols: [],
-      cooldownPeriod: 0,
-      earmarkIncentivePcnt: 0.01,
-      liquidityGaugeAddress: '' as Hash,
-      rewardEmissions: [],
-      rewardTokenAddress: '' as Hash,
-      rewardTokenAddresses: [],
-      stakedTokenAddress: '' as Hash,
-      unstakePeriod: 0,
-      totalStaked: '',
-      shouldReversePoolTokenOrderOnDisplay: false,
-    } as BuildResponse)
+    }
+  )
 
-  return data
+  return {
+    ...data?.pool,
+    ...data?.staking,
+    tokens: data?.tokens,
+    priceMap: data?.priceMap,
+  } as UseStakingReturn<T>
 }
