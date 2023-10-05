@@ -1,7 +1,5 @@
-import dynamic from 'next/dynamic'
 import { useCallback } from 'react'
 import { useAtom, useSetAtom } from 'jotai'
-import { AnimatePresence, motion } from 'framer-motion'
 
 import { removeLiquidityTxAtom } from 'states/tx'
 import { walletErrorHandler } from 'utils/walletErrorHandler'
@@ -10,14 +8,10 @@ import type { UseRemoveLiquidityFormReturns } from 'hooks/pancakeswap/useRemoveL
 import { removeLiquidityErrorAtom } from '../../useWatch'
 
 import { StyledRemoveLiquidityModalPage1Footer } from './styled'
+import Lottie from 'components/Lottie'
 import { Checkout } from 'components/Modals/shared'
 import TxButton from 'components/TxButton'
 import Signature from './Signature'
-import Lottie from 'components/Lottie'
-
-const Timer = dynamic(() => import('./Timer'), {
-  ssr: false,
-})
 
 type RemoveLiquidityModalPage1FooterProps = {
   send: XstateSend

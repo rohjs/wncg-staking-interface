@@ -45,6 +45,7 @@ export default function RemoveLiquidityModalPageFormSummary({
 
   function onClickCheckbox(value: string) {
     setValue(RemoveLiquidityField.UseNative, value === '0' ? false : true)
+    setValue(RemoveLiquidityField.Signature, undefined)
   }
 
   return (

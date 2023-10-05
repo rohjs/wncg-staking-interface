@@ -1,10 +1,6 @@
-import { useCallback } from 'react'
-import dynamic from 'next/dynamic'
 import { useAtom, useSetAtom } from 'jotai'
-import { AnimatePresence } from 'framer-motion'
 
 import { removeLiquidityTxAtom } from 'states/tx'
-import { walletErrorHandler } from 'utils/walletErrorHandler'
 import { useRemoveLiquidity } from 'hooks/pancakeswap'
 import type { UseRemoveLiquidityFormReturns } from 'hooks/pancakeswap/useRemoveLiquidityForm'
 import { removeLiquidityErrorAtom } from '../useWatch'
@@ -32,9 +28,7 @@ function RemoveLiquidityModalPage1({
     isNative,
     lpAmountOut,
     signature,
-    submitDisabled,
     pcntOut,
-    setValue,
   } = props
 
   const { removeLiquidity, error } = useRemoveLiquidity(
@@ -44,47 +38,7 @@ function RemoveLiquidityModalPage1({
     signature!
   )
 
-  const onClickRemoveLiquidity = useCallback(async () => {
-    try {
-      if (error) {
-        throw Error(error)
-      }
-
-      const txHash = await removeLiquidity?.()
-      if (!txHash) throw Error('No txHash')
-
-      setTx({
-        hash: txHash,
-        amountsOut,
-        amountsOutFiatValueSum,
-        pcntOut,
-        isNative,
-        lpAmountOut,
-      })
-
-      send('NEXT')
-    } catch (error: any) {
-      walletErrorHandler(error, () => {
-        setError(error)
-        send('FAIL')
-      })
-      send('ROLLBACK')
-    }
-  }, [
-    amountsOut,
-    amountsOutFiatValueSum,
-    error,
-    isNative,
-    lpAmountOut,
-    pcntOut,
-    removeLiquidity,
-    send,
-    setError,
-    setTx,
-  ])
-
   const disabled = !!tx.hash
-  const showTimer = (signature?.deadline ?? 0) > 0 && !disabled
 
   return (
     <StyledRemoveLiquidityModalPage1 $disabled={disabled}>
