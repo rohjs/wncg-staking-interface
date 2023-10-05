@@ -8,6 +8,23 @@ export const StyledRemoveLiquidityModalPage1Form = styled.div`
     white-space: nowrap;
   }
 
+  .formLabel {
+    ${flexbox('start')}
+    ${textStyle('body', 2, 700)}
+    color: rgba(var(--white-rgb), 0.9);
+
+    .count {
+      ${flexbox()}
+      ${textStyle('body', 3)}
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      font-weight: 700;
+      border-radius: 24px;
+      background-color: rgba(var(--white-rgb), 0.1);
+    }
+  }
+
   .formOutput {
     ${flexbox('center', 'end')}
     flex-direction: column;
