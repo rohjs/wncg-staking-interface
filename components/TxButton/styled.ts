@@ -4,7 +4,7 @@ import { flexbox, media, posCenterY } from 'styles/utils'
 
 import { StyledButton } from 'components/Button/styled'
 
-export const StyledTxButton = styled(StyledButton)`
+export const StyledTxButton = styled(StyledButton)<{ $short?: boolean }>`
   .leftIcon,
   .rightIcon {
     ${flexbox()}
@@ -47,4 +47,33 @@ export const StyledTxButton = styled(StyledButton)`
       }
     `
   )}
+
+  ${({ $short }) =>
+    $short &&
+    css`
+      ${media(
+        'minSmLaptop',
+        css`
+          .leftIcon {
+            left: 12px;
+          }
+
+          .rightIcon {
+            width: 24px;
+            height: 24px;
+            right: 12px;
+
+            .connectorIcon {
+              width: 24px;
+              height: 24px;
+
+              svg {
+                width: ${24 * 0.8}px;
+                height: ${24 * 0.8}px;
+              }
+            }
+          }
+        `
+      )}
+    `}
 `

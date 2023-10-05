@@ -24,6 +24,7 @@ type TxButtonProps = {
   disabled?: boolean
   hash?: Hash
   $size?: ButtonSize
+  $short?: boolean
 } & PropsWithChildren
 
 function TxButton(
@@ -34,6 +35,7 @@ function TxButton(
     disabled: _disabled,
     hash,
     $size = 'md',
+    $short = false,
   }: TxButtonProps,
   ref: ForwardedRef<HTMLButtonElement>
 ) {
@@ -68,8 +70,10 @@ function TxButton(
 
   const label = useMemo(() => {
     if (!isLoading) return children
-    return isMobile ? `Ready to confirm` : `Ready to confirm in your wallet`
-  }, [children, isLoading, isMobile])
+    return isMobile || $short
+      ? `Ready to confirm`
+      : `Ready to confirm in your wallet`
+  }, [$short, children, isLoading, isMobile])
 
   const iconSize = $size === 'sm' ? 16 : 32
 
@@ -82,6 +86,7 @@ function TxButton(
       $variant="primary"
       $contain={false}
       $size={$size}
+      $short={$short}
     >
       <>
         <AnimatePresence>
