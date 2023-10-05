@@ -11,6 +11,7 @@ import completedAnimation from './animation-completed.json'
 import failAnimation from './animation-fail.json'
 import errorAnimation from './animation-error.json'
 import loadingAnimation from './animation-loading.json'
+import modalProgressAnimation from './animation-modal-progress.json'
 import pendingAnimation from './animation-pending.json'
 import scrollAnimation from './animation-scroll.json'
 import subscriptionAnimation from './animation-subscription.json'
@@ -26,6 +27,7 @@ type LottieType =
   | 'fail'
   | 'error'
   | 'loading'
+  | 'modalProgress'
   | 'pending'
   | 'scroll'
   | 'subscription'
@@ -59,6 +61,8 @@ export default function Lottie({
         return errorAnimation
       case 'loading':
         return loadingAnimation
+      case 'modalProgress':
+        return modalProgressAnimation
       case 'pending':
         return pendingAnimation
       case 'scroll':
