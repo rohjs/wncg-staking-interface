@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic'
 import { useCallback, useEffect } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
 import { useAtomValue } from 'jotai'
@@ -8,24 +9,28 @@ import { slippageAtom } from 'states/system'
 import { RemoveLiquidityField } from 'config/constants'
 import { ANIMATION_MAP, EXIT_MOTION } from 'config/constants/motions'
 import { bnum } from 'utils/bnum'
+import { walletErrorHandler } from 'utils/walletErrorHandler'
 import { useSignature } from 'hooks/pancakeswap'
 import type { RemoveLiquidityForm } from 'hooks/pancakeswap/useRemoveLiquidityForm'
 
-import { StyledRemoveLiquidityModalPage1Signature } from './styled'
+import { StyledRemoveLiquidityModalPage1FooterSignature } from './styled'
 import Button from 'components/Button'
-import Icon from 'components/Icon'
 
-type RemoveLiquidityModalPage1SignatureProps = {
+const Timer = dynamic(() => import('./Timer'), {
+  ssr: false,
+})
+
+type RemoveLiquidityModalPage1FooterSignatureProps = {
   lpAmountOut: string
   setValue: UseFormSetValue<RemoveLiquidityForm>
   signature?: Signature
 }
 
-export default function RemoveLiquidityModalPage1Signature({
+export default function RemoveLiquidityModalPage1FooterSignature({
   lpAmountOut,
   setValue,
   signature,
-}: RemoveLiquidityModalPage1SignatureProps) {
+}: RemoveLiquidityModalPage1FooterSignatureProps) {
   const sign = useSignature()
   const tx = useAtomValue(removeLiquidityTxAtom)
   const slippage = useAtomValue(slippageAtom) ?? '0.5'
@@ -37,15 +42,7 @@ export default function RemoveLiquidityModalPage1Signature({
         setValue(RemoveLiquidityField.Signature, sig)
       }
     } catch (error: any) {
-      if (
-        error.code === 'ACTION_REJECTED' ||
-        error.code === 4001 ||
-        error.error === 'Rejected by user'
-      ) {
-        return
-      }
-
-      throw error
+      walletErrorHandler(error)
     }
   }, [sign, lpAmountOut, setValue])
 
@@ -57,33 +54,21 @@ export default function RemoveLiquidityModalPage1Signature({
   }, [setValue, lpAmountOut, slippage])
 
   return (
-    <StyledRemoveLiquidityModalPage1Signature>
-      <div className="formLabel">
-        <span className="count">2</span>
-        <label className="label">Sign to withdraw the selected amount</label>
-      </div>
-
+    <StyledRemoveLiquidityModalPage1FooterSignature className="signatureButton">
       <Button
         className="signButton"
         onClick={onClickSign}
         disabled={disabled || removeLiquidityDisabled}
         $size="md"
-        $contain
       >
+        <span className="count">2</span>
         <span className="label">{disabled ? 'Signed' : 'Sign'}</span>
-
-        <AnimatePresence>
-          {disabled && (
-            <motion.div
-              {...EXIT_MOTION}
-              className="rightIcon"
-              variants={ANIMATION_MAP.fadeIn}
-            >
-              <Icon icon="check" $size={24} />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </Button>
-    </StyledRemoveLiquidityModalPage1Signature>
+      <Timer
+        disabled={!!tx.hash}
+        deadline={signature?.deadline}
+        setValue={setValue}
+      />
+    </StyledRemoveLiquidityModalPage1FooterSignature>
   )
 }

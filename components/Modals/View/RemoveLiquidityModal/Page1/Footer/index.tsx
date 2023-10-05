@@ -1,32 +1,36 @@
-import { useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import { useCallback } from 'react'
 import { useAtom, useSetAtom } from 'jotai'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import { removeLiquidityTxAtom } from 'states/tx'
 import { walletErrorHandler } from 'utils/walletErrorHandler'
 import { useRemoveLiquidity } from 'hooks/pancakeswap'
 import type { UseRemoveLiquidityFormReturns } from 'hooks/pancakeswap/useRemoveLiquidityForm'
-import { removeLiquidityErrorAtom } from '../useWatch'
+import { removeLiquidityErrorAtom } from '../../useWatch'
 
-import { StyledRemoveLiquidityModalPage1 } from './styled'
-import { CloseButton, PendingNotice } from 'components/Modals/shared'
-import SlippageControl from 'components/SlippageControl'
-import Footer from './Footer'
-import Form from './Form'
+import { StyledRemoveLiquidityModalPage1Footer } from './styled'
+import { Checkout } from 'components/Modals/shared'
+import TxButton from 'components/TxButton'
+import Signature from './Signature'
+import Lottie from 'components/Lottie'
 
-type RemoveLiquidityModalPage1Props = {
+const Timer = dynamic(() => import('./Timer'), {
+  ssr: false,
+})
+
+type RemoveLiquidityModalPage1FooterProps = {
   send: XstateSend
 } & UseRemoveLiquidityFormReturns
 
-function RemoveLiquidityModalPage1({
-  send,
-  ...props
-}: RemoveLiquidityModalPage1Props) {
+export default function RemoveLiquidityPage1Footer(
+  props: RemoveLiquidityModalPage1FooterProps
+) {
   const [tx, setTx] = useAtom(removeLiquidityTxAtom)
   const setError = useSetAtom(removeLiquidityErrorAtom)
 
   const {
+    send,
     amountsOut,
     amountsOutFiatValueSum,
     isNative,
@@ -84,29 +88,32 @@ function RemoveLiquidityModalPage1({
   ])
 
   const disabled = !!tx.hash
-  const showTimer = (signature?.deadline ?? 0) > 0 && !disabled
 
   return (
-    <StyledRemoveLiquidityModalPage1 $disabled={disabled}>
-      <header className="modalHeader">
-        <div className="titleGroup">
-          <h2 className="subtitle">Exit pool</h2>
-        </div>
-        <SlippageControl disabled={disabled} />
-        <CloseButton />
-      </header>
+    <StyledRemoveLiquidityModalPage1Footer className="modalFooter">
+      <Checkout
+        message="You can get"
+        amount={amountsOutFiatValueSum}
+        type="fiat"
+      />
 
-      <div className="container">
-        <div className="modalContent">
-          <Form {...props} />
-        </div>
+      <div className="buttonGroup">
+        <Signature
+          lpAmountOut={lpAmountOut}
+          setValue={setValue}
+          signature={signature}
+        />
+
+        <Lottie className="progress" animationData="modalProgress" />
+
+        <TxButton
+          onClick={onClickRemoveLiquidity}
+          disabled={disabled || submitDisabled}
+          $short
+        >
+          Exit pool
+        </TxButton>
       </div>
-
-      <Footer {...props} send={send} />
-
-      <PendingNotice hash={tx.hash} />
-    </StyledRemoveLiquidityModalPage1>
+    </StyledRemoveLiquidityModalPage1Footer>
   )
 }
-
-export default RemoveLiquidityModalPage1

@@ -9,13 +9,15 @@ import { useCountdown } from 'hooks'
 import type { RemoveLiquidityForm } from 'hooks/pancakeswap/useRemoveLiquidityForm'
 
 type RemoveLiquidityModalPage1TimerProps = {
-  deadline: number
   setValue: UseFormSetValue<RemoveLiquidityForm>
+  deadline?: number
+  disabled?: boolean
 }
 
 function RemoveLiquidityModalPage1Timer({
-  deadline,
   setValue,
+  deadline = 0,
+  disabled,
 }: RemoveLiquidityModalPage1TimerProps) {
   const enabled = !!deadline
   const { days, hours, minutes, seconds } = useCountdown(deadline, {
@@ -27,6 +29,18 @@ function RemoveLiquidityModalPage1Timer({
   })
 
   const countdownText = joinCountdown(days, hours, minutes, seconds)
+
+  if (!deadline || !countdownText || disabled) {
+    return (
+      <motion.p
+        {...EXIT_MOTION}
+        className="desc"
+        variants={ANIMATION_MAP.fadeIn}
+      >
+        Sign to exit, no transaction needed.
+      </motion.p>
+    )
+  }
 
   return (
     <motion.p
