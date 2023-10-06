@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-import { flexbox, textStyle } from 'styles/utils'
+import { flexbox, media, textStyle } from 'styles/utils'
 
 export const StyledRemoveLiquidityModalPage1Form = styled.div`
   .formHeader {
@@ -10,16 +10,15 @@ export const StyledRemoveLiquidityModalPage1Form = styled.div`
 
   .formLabel {
     ${flexbox('start')}
-    ${textStyle('body', 2, 700)}
+    ${textStyle('body', 3, 700)}
     color: rgba(var(--white-rgb), 0.9);
 
     .count {
       ${flexbox()}
-      ${textStyle('body', 3)}
-      width: 24px;
-      height: 24px;
+      ${textStyle('body', 4, 700)}
+      width: 20px;
+      height: 20px;
       margin-right: 8px;
-      font-weight: 700;
       border-radius: 24px;
       background-color: rgba(var(--white-rgb), 0.1);
     }
@@ -30,24 +29,22 @@ export const StyledRemoveLiquidityModalPage1Form = styled.div`
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 0;
-    padding-left: 16px;
+    padding-left: 12px;
 
     .amount {
       .value {
-        ${textStyle('body', 2)}
-        font-weight: 700;
+        ${textStyle('body', 3, 700)}
       }
     }
 
     .number,
     .symbol {
-      ${textStyle('body', 3)}
+      ${textStyle('body', 4, 700)}
       margin-left: 4px;
-      font-weight: 700;
     }
 
     .totalBalance {
-      ${textStyle('body', 3)}
+      ${textStyle('body', 4)}
       display: inline-block;
       margin-top: 2px;
       color: rgba(var(--gray-25-rgb), 0.5);
@@ -62,6 +59,46 @@ export const StyledRemoveLiquidityModalPage1Form = styled.div`
   .inputControl {
     margin-top: 4px;
   }
+
+  ${media(
+    'minLaptop',
+    css`
+      .formLabel {
+        ${textStyle('body', 2, 700)}
+
+        .count {
+          ${textStyle('body', 3, 700)}
+          width: 24px;
+          height: 24px;
+          margin-right: 8px;
+        }
+      }
+
+      .formOutput {
+        padding-left: 16px;
+
+        .amount {
+          .value {
+            ${textStyle('body', 2, 700)}
+          }
+        }
+
+        .number,
+        .symbol {
+          ${textStyle('body', 3, 700)}
+          margin-left: 4px;
+        }
+
+        .totalBalance {
+          ${textStyle('body', 3)}
+
+          .symbol {
+            ${textStyle('body', 4)}
+          }
+        }
+      }
+    `
+  )}
 `
 
 export const StyledRemoveLiquidityModalPage1FormButtonGroup = styled.div`
@@ -177,14 +214,15 @@ export const StyledRemoveLiquidityModalPageFormSummary = styled.div`
 
     dd {
       ${flexbox('start')}
+      flex-wrap: wrap;
       margin-top: 4px;
     }
 
     .price {
-      margin-left: 16px;
+      margin-right: 16px;
 
-      &:first-child {
-        margin-left: 0;
+      &:last-child {
+        margin-right: 0;
       }
     }
 
@@ -198,4 +236,15 @@ export const StyledRemoveLiquidityModalPageFormSummary = styled.div`
       margin-left: 0.25em;
     }
   }
+
+  ${media(
+    'minLaptop',
+    css`
+      .currentPrice {
+        dd {
+          flex-wrap: nowrap;
+        }
+      }
+    `
+  )}
 `

@@ -1,17 +1,21 @@
-import { useCallback } from 'react'
-import { useAtom, useSetAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
+import { slippageAtom } from 'states/system'
 import { removeLiquidityTxAtom } from 'states/tx'
+import { RemoveLiquidityField } from 'config/constants'
 import { walletErrorHandler } from 'utils/walletErrorHandler'
+import { useResponsive } from 'hooks'
 import { useRemoveLiquidity } from 'hooks/pancakeswap'
 import type { UseRemoveLiquidityFormReturns } from 'hooks/pancakeswap/useRemoveLiquidityForm'
 import { removeLiquidityErrorAtom } from '../../useWatch'
 
 import { StyledRemoveLiquidityModalPage1Footer } from './styled'
-import Lottie from 'components/Lottie'
 import { Checkout } from 'components/Modals/shared'
-import TxButton from 'components/TxButton'
-import Signature from './Signature'
+
+const Desktop = dynamic(() => import('./Desktop'), { ssr: false })
+const Mobile = dynamic(() => import('./Mobile'), { ssr: false })
 
 type RemoveLiquidityModalPage1FooterProps = {
   send: XstateSend
@@ -20,8 +24,11 @@ type RemoveLiquidityModalPage1FooterProps = {
 export default function RemoveLiquidityPage1Footer(
   props: RemoveLiquidityModalPage1FooterProps
 ) {
+  const { isPortable } = useResponsive()
+
   const [tx, setTx] = useAtom(removeLiquidityTxAtom)
   const setError = useSetAtom(removeLiquidityErrorAtom)
+  const slippage = useAtomValue(slippageAtom) ?? '0.5'
 
   const {
     send,
@@ -83,6 +90,19 @@ export default function RemoveLiquidityPage1Footer(
 
   const disabled = !!tx.hash
 
+  const childrenProps = {
+    disabled,
+    onRemoveLiquidity: onClickRemoveLiquidity,
+    lpAmountOut,
+    setValue,
+    signature,
+    submitDisabled,
+  }
+
+  useEffect(() => {
+    setValue(RemoveLiquidityField.Signature, undefined)
+  }, [setValue, pcntOut, slippage])
+
   return (
     <StyledRemoveLiquidityModalPage1Footer className="modalFooter">
       <Checkout
@@ -91,23 +111,11 @@ export default function RemoveLiquidityPage1Footer(
         type="fiat"
       />
 
-      <div className="buttonGroup">
-        <Signature
-          lpAmountOut={lpAmountOut}
-          setValue={setValue}
-          signature={signature}
-        />
-
-        <Lottie className="progress" animationData="modalProgress" />
-
-        <TxButton
-          onClick={onClickRemoveLiquidity}
-          disabled={disabled || submitDisabled}
-          $short
-        >
-          Exit pool
-        </TxButton>
-      </div>
+      {isPortable ? (
+        <Mobile {...childrenProps} />
+      ) : (
+        <Desktop {...childrenProps} />
+      )}
     </StyledRemoveLiquidityModalPage1Footer>
   )
 }

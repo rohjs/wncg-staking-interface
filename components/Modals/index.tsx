@@ -15,11 +15,9 @@ import View from './View'
 
 function Modals() {
   const { removeModal } = useModal()
-  const { bp } = useResponsive()
+  const { isPortable } = useResponsive()
 
   const modal = useAtomValue(modalAtom)
-
-  const isPortable = useMemo(() => bp === 'mobile' || bp === 'tablet', [bp])
 
   const motionVariants = useMemo(
     () => (isPortable ? ANIMATION_MAP.appearInUp : ANIMATION_MAP.popInCenter),

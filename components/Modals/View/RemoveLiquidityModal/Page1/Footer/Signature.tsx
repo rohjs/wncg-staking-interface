@@ -1,13 +1,13 @@
-import dynamic from 'next/dynamic'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
+import dynamic from 'next/dynamic'
 import { useAtomValue } from 'jotai'
 
 import { removeLiquidityTxAtom } from 'states/tx'
-import { slippageAtom } from 'states/system'
 import { RemoveLiquidityField } from 'config/constants'
 import { bnum } from 'utils/bnum'
 import { walletErrorHandler } from 'utils/walletErrorHandler'
+import { useResponsive } from 'hooks'
 import { useSignature } from 'hooks/pancakeswap'
 import type { RemoveLiquidityForm } from 'hooks/pancakeswap/useRemoveLiquidityForm'
 
@@ -29,9 +29,10 @@ export default function RemoveLiquidityModalPage1FooterSignature({
   setValue,
   signature,
 }: RemoveLiquidityModalPage1FooterSignatureProps) {
+  const { isPortable } = useResponsive()
   const sign = useSignature()
+
   const tx = useAtomValue(removeLiquidityTxAtom)
-  const slippage = useAtomValue(slippageAtom) ?? '0.5'
 
   const onClickSign = useCallback(async () => {
     try {
@@ -47,10 +48,6 @@ export default function RemoveLiquidityModalPage1FooterSignature({
   const removeLiquidityDisabled = bnum(lpAmountOut).isZero()
   const disabled = !!signature || !!tx.hash
 
-  useEffect(() => {
-    setValue(RemoveLiquidityField.Signature, undefined)
-  }, [setValue, lpAmountOut, slippage])
-
   return (
     <StyledRemoveLiquidityModalPage1FooterSignature className="signatureButton">
       <Button
@@ -62,11 +59,14 @@ export default function RemoveLiquidityModalPage1FooterSignature({
         <span className="count">2</span>
         <span className="label">{disabled ? 'Signed' : 'Sign'}</span>
       </Button>
-      <Timer
-        disabled={!!tx.hash}
-        deadline={signature?.deadline}
-        setValue={setValue}
-      />
+
+      {!isPortable && (
+        <Timer
+          disabled={!!tx.hash}
+          deadline={signature?.deadline}
+          setValue={setValue}
+        />
+      )}
     </StyledRemoveLiquidityModalPage1FooterSignature>
   )
 }

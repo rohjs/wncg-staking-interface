@@ -46,23 +46,30 @@ export const StyledRemoveLiquidityModalPage1Footer = styled.div`
       }
     }
   }
-`
 
-export const StyledRemoveLiquidityModalPage1FooterSignature = styled.div`
   .desc {
     ${textStyle('body', 4)}
     margin-top: 8px;
     color: var(--gray-500);
+    text-align: center;
   }
 
   .timer {
     ${textStyle('body', 4)}
     margin-top: 8px;
     white-space: nowrap;
+    text-align: center;
 
     strong {
       color: var(--primary-200);
       font-weight: 500;
     }
+  }
+`
+
+export const StyledRemoveLiquidityModalPage1FooterSignature = styled.div`
+  .desc,
+  .timer {
+    text-align: left;
   }
 `

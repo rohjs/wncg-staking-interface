@@ -47,7 +47,7 @@ export default function RemoveLiquidityModalPage1Form(
         <div className="formLabel">
           <span className="count">1</span>
           <label className="label" htmlFor="exitPcnt">
-            Amount to withdraw
+            Amount {!isMobile && 'to withdraw'}
           </label>
         </div>
 

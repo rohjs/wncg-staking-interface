@@ -35,6 +35,8 @@ export function useResponsive() {
     return !!bp && bp === 'desktop'
   }, [bp])
 
+  const isPortable = useMemo(() => bp === 'mobile' || bp === 'tablet', [bp])
+
   const isHandheld = useMemo(() => isMobile || isTablet, [isMobile, isTablet])
 
   const isSmallerThanDesktop = useMemo(
@@ -53,6 +55,7 @@ export function useResponsive() {
     isSmallLaptop,
     isLaptop,
     isDesktop,
+    isPortable,
     isHandheld,
   }
 }
